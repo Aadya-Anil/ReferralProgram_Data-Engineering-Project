@@ -1,0 +1,8 @@
+Column Name,Data Type,Null Count,Distinct Value Count
+id,int64,0,8
+lead_id,object,0,5
+source_category,object,0,2
+created_at,object,0,5
+preferred_location,object,0,3
+timezone_location,object,0,1
+current_status,object,0,5

@@ -1,0 +1,7 @@
+Column Name,Data Type,Null Count,Distinct Value Count
+transaction_id,object,0,14
+transaction_status,object,0,1
+transaction_at,object,0,14
+transaction_location,object,0,6
+timezone_transaction,object,0,2
+transaction_type,object,0,2
