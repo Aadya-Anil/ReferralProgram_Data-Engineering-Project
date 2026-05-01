@@ -1,18 +1,29 @@
 # Referral Program Data Pipeline
 
 ## Overview
-This project processes referral program data to identify valid and potentially 
-fraudulent referral rewards using Python and Pandas, containerized with Docker.
+This project processes referral program data to identify valid and potentially fraudulent referral rewards using Python and Pandas, containerized with Docker.
 
 ## Project Structure
-project/
-├── data/               # Input CSV files
-├── output/             # Generated report
-├── main.py             # Main pipeline script
-├── requirements.txt    # Python dependencies
-├── Dockerfile          # Docker configuration
-└── README.md           # This file
+📂 project  
+├── 📁 data  
+├── 📁 profiled datasets  
+├── 📁 output  
+│   ├── 📄 referral_report.csv     
+├── 📄 Dockerfile    
+├── 📄 data_dictionary.xlsx  
+├── 📄 main.py  
+├── 📄 requirements.txt  
 
+Each component serves a specific purpose:
+
+* data               : Stores raw input datasets
+* profiled datasets  : Stores profiled datasets with null count and distinct value count
+* output             : Contains generated output report
+* Dockerfile         : Docker configuration
+* data_dictionary    : Data dictionary for business users
+* main.py            : Main pipeline script
+* requirements.txt   : Python dependencies
+  
 ## Requirements
 - Docker Desktop
 - Python 3.10 (if running locally)
@@ -46,7 +57,7 @@ python main.py
 ```
 
 ## Input Data
-Place all CSV files in the `data/` folder:
+  
 - user_referrals.csv
 - user_referral_logs.csv
 - user_logs.csv
@@ -56,6 +67,4 @@ Place all CSV files in the `data/` folder:
 - lead_log.csv
 
 ## Output
-The pipeline generates `output/referral_report.csv` with 46 rows containing 
-referral details and a boolean `is_business_logic_valid` column indicating 
-whether each referral reward is valid or potentially fraudulent.
+The pipeline generates `output/referral_report.csv` with 46 rows containing referral details and a boolean `is_business_logic_valid` column indicating whether each referral reward is valid or potentially fraudulent.
