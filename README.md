@@ -5,10 +5,13 @@ This project processes referral program data to identify valid and potentially f
 
 ## Project Structure
 >Project  
->> data - raw input datasets  
->> profiled datasets - profiled tables with null count and distinct value count  
->> Output - generated report in csv  
->> 
+>> Data               - raw input datasets  
+>> Profiled datasets  - profiled tables with null count and distinct value count  
+>> Output             - generated report in csv  
+>> Dockerfile         - Docker configuration  
+>> data_dictionary    - defines each column in the output report
+>> main.py            - main pipeline script  
+>> requirements.txt   - Python dependencies
 
 ## Requirements
 - Docker Desktop
