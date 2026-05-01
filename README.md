@@ -5,7 +5,7 @@ This project processes referral program data to identify valid and potentially f
 
 ## Project Structure
 >Project  
->> Data               - raw input datasets  
+>> Data               # raw input datasets  
 >> Profiled datasets  - profiled tables with null count and distinct value count  
 >> Output             - generated report in csv  
 >> Dockerfile         - Docker configuration  
