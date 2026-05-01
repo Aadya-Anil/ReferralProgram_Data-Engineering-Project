@@ -5,16 +5,23 @@ This project processes referral program data to identify valid and potentially f
 
 ## Project Structure
 📂 project  
-├── 📁 custom_blocks  
-├── 📁 custom_pages  
-├── 📁 docs  
-│   ├── 📂 category-folder  
-│   │   ├── 📄 page.md  
-│   │   └── 📃 _order.yaml  
-│   └── 📃 _order.yaml  
-├── 📁 recipes  
-└── 📁 reference  
+├── 📁 data  
+├── 📁 profiled datasets 
+├── 📁 output  
+│   ├── 📄 referral_report.csv     
+├── 📄 Dockerfile    
+├── 📄 data_dictionary.xlsx  
+├── 📄 main.py  
+├── 📄 requirements.txt  
 
+Each component serves a specific purpose:
+
+* custom_blocks: Stores any custom blocks you’ve created.
+custom_pages: Stores any custom pages you’ve created.
+docs: Contains your main documentation content, organized in categories.
+recipes: Holds step-by-step tutorials and how-to guides.
+reference: Contains API reference documentation.
+_order.yaml: Manages the navigation structure for each section.
 ## Requirements
 - Docker Desktop
 - Python 3.10 (if running locally)
