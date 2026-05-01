@@ -1,5 +1,6 @@
 import pandas as pd
 import pytz
+import os
 
 # ============================================================
 #                        DATA LOADING  
@@ -295,6 +296,36 @@ final_report = final_report.rename(columns={
 # Add referral_details_id
 final_report.insert(0, 'referral_details_id', range(101, 101 + len(final_report)))
 
-# Save to CSV
-final_report.to_csv('referral_report.csv', index=False)
+# Save to CSV in output folder
+os.makedirs('output', exist_ok=True)
+final_report.to_csv('output/referral_report.csv', index=False)
 
+#data dictionary defining each column in the output report
+data_dictionary = [
+    {"Column Name": "referral_details_id", "Data Type": "Integer", "Description": "A unique number assigned to each row in this report.", "Example": "101"},
+    {"Column Name": "referral_id", "Data Type": "String", "Description": "A unique code that identifies each referral transaction.", "Example": "9331c8f144dad5a3b8e4a10467b4343a"},
+    {"Column Name": "referral_source", "Data Type": "String", "Description": "How the referral was made. Can be User Sign Up, Draft Transaction, or Lead.", "Example": "User Sign Up"},
+    {"Column Name": "referral_source_category", "Data Type": "String", "Description": "Broader category of the referral source. Online means digital signup, Offline means in-person transaction.", "Example": "Online"},
+    {"Column Name": "referral_at", "Data Type": "Datetime", "Description": "The date and time when the referral was created, in local Indonesian time.", "Example": "2024-05-01 12:17:31"},
+    {"Column Name": "referrer_id", "Data Type": "String", "Description": "Unique ID of the existing member who referred a new user.", "Example": "2c71c5d66c7e12a0b3c200ba6ed3b78e"},
+    {"Column Name": "referrer_name", "Data Type": "String", "Description": "Full name of the existing member who made the referral.", "Example": "John Doe"},
+    {"Column Name": "referrer_phone_number", "Data Type": "String", "Description": "Phone number of the existing member who made the referral.", "Example": "123-456-7890"},
+    {"Column Name": "referrer_homeclub", "Data Type": "String", "Description": "The gym branch where the referring member is registered.", "Example": "PERMATA HIJAU"},
+    {"Column Name": "referee_id", "Data Type": "String", "Description": "Unique ID of the new user who was referred.", "Example": "f12348hbsdkjkfhkjdf"},
+    {"Column Name": "referee_name", "Data Type": "String", "Description": "Full name of the new user who was referred.", "Example": "Jane Doe"},
+    {"Column Name": "referee_phone", "Data Type": "String", "Description": "Phone number of the new user who was referred.", "Example": "987-654-3210"},
+    {"Column Name": "referral_status", "Data Type": "String", "Description": "Current status of the referral. Berhasil means Successful, Menunggu means Pending, Tidak Berhasil means Failed.", "Example": "Berhasil"},
+    {"Column Name": "num_reward_days", "Data Type": "Integer", "Description": "Number of reward days granted to the referrer for a successful referral.", "Example": "30"},
+    {"Column Name": "transaction_id", "Data Type": "String", "Description": "Unique ID of the transaction linked to this referral.", "Example": "1d1eb8a9e864a1cccb2d850398461807"},
+    {"Column Name": "transaction_status", "Data Type": "String", "Description": "Status of the linked transaction. Paid means the transaction was completed successfully.", "Example": "Paid"},
+    {"Column Name": "transaction_at", "Data Type": "Datetime", "Description": "The date and time when the transaction occurred, in local Indonesian time.", "Example": "2024-05-03 04:10:16"},
+    {"Column Name": "transaction_location", "Data Type": "String", "Description": "The gym branch where the transaction took place.", "Example": "BENHIL"},
+    {"Column Name": "transaction_type", "Data Type": "String", "Description": "Type of transaction. New means a brand new membership purchase.", "Example": "New"},
+    {"Column Name": "updated_at", "Data Type": "Datetime", "Description": "The date and time when the referral record was last updated, in local Indonesian time.", "Example": "2024-05-01 12:17:31"},
+    {"Column Name": "reward_granted_at", "Data Type": "Datetime", "Description": "The date and time when the reward was granted to the referee.", "Example": "2024-06-30 14:00:00"},
+    {"Column Name": "is_reward_granted", "Data Type": "Boolean", "Description": "Indicates whether the reward has been given to the referee. True means granted, False means not yet granted.", "Example": "True"},
+    {"Column Name": "is_business_logic_valid", "Data Type": "Boolean", "Description": "Indicates whether the referral reward is valid based on business rules. True means valid, False means potentially fraudulent or invalid.", "Example": "True"},
+]
+
+dd_df = pd.DataFrame(data_dictionary)
+dd_df.to_excel('data_dictionary.xlsx', index=False)
