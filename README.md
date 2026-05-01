@@ -5,7 +5,7 @@ This project processes referral program data to identify valid and potentially f
 
 ## Project Structure
 Project  
-data  
+        |-- data  
 kol
 
 ## Requirements
