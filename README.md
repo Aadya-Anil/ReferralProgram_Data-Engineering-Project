@@ -4,9 +4,11 @@
 This project processes referral program data to identify valid and potentially fraudulent referral rewards using Python and Pandas, containerized with Docker.
 
 ## Project Structure
->Project
-        |-- data  
->>kol
+>Project  
+>> data - raw input datasets
+>> profiled datasets - profiled tables with null count and distinct value count
+>> Output - generated report in csv
+>> 
 
 ## Requirements
 - Docker Desktop
