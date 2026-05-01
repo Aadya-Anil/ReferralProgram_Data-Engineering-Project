@@ -6,7 +6,7 @@ This project processes referral program data to identify valid and potentially f
 ## Project Structure
 📂 project  
 ├── 📁 data  
-├── 📁 profiled datasets 
+├── 📁 profiled datasets  
 ├── 📁 output  
 │   ├── 📄 referral_report.csv     
 ├── 📄 Dockerfile    
@@ -16,12 +16,14 @@ This project processes referral program data to identify valid and potentially f
 
 Each component serves a specific purpose:
 
-* custom_blocks: Stores any custom blocks you’ve created.
-custom_pages: Stores any custom pages you’ve created.
-docs: Contains your main documentation content, organized in categories.
-recipes: Holds step-by-step tutorials and how-to guides.
-reference: Contains API reference documentation.
-_order.yaml: Manages the navigation structure for each section.
+* data               : Stores raw input datasets
+* profiled datasets  : Stores profiled datasets with null count and distinct value count
+* output             : Contains generated output report
+* Dockerfile         : Docker configuration
+* data_dictionary    : Data dictionary for business users
+* main.py            : Main pipeline script
+* requirements.txt   : Python dependencies
+  
 ## Requirements
 - Docker Desktop
 - Python 3.10 (if running locally)
@@ -55,7 +57,7 @@ python main.py
 ```
 
 ## Input Data
-Place all CSV files in the `data/` folder:
+  
 - user_referrals.csv
 - user_referral_logs.csv
 - user_logs.csv
@@ -65,6 +67,4 @@ Place all CSV files in the `data/` folder:
 - lead_log.csv
 
 ## Output
-The pipeline generates `output/referral_report.csv` with 46 rows containing 
-referral details and a boolean `is_business_logic_valid` column indicating 
-whether each referral reward is valid or potentially fraudulent.
+The pipeline generates `output/referral_report.csv` with 46 rows containing referral details and a boolean `is_business_logic_valid` column indicating whether each referral reward is valid or potentially fraudulent.
