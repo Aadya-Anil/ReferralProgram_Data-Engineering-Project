@@ -279,7 +279,6 @@ final_report = df[[
     'transaction_type',
     'updated_at',
     'created_at',
-    'is_reward_granted',
     'is_business_logic_valid'
 ]].copy()
 
@@ -297,5 +296,6 @@ final_report = final_report.rename(columns={
 final_report.insert(0, 'referral_details_id', range(101, 101 + len(final_report)))
 
 # Save to CSV
-final_report.to_csv('referral_report.csv', index=False)
+#final_report.to_csv('referral_report.csv', index=False)
 
+print(user_logs[['user_id', 'name', 'phone_number']].head(5).to_string())
