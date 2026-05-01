@@ -5,9 +5,9 @@ This project processes referral program data to identify valid and potentially f
 
 ## Project Structure
 >Project  
->> data - raw input datasets
->> profiled datasets - profiled tables with null count and distinct value count
->> Output - generated report in csv
+>> data - raw input datasets  
+>> profiled datasets - profiled tables with null count and distinct value count  
+>> Output - generated report in csv  
 >> 
 
 ## Requirements
