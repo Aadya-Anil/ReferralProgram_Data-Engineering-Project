@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Springer Capital — Referral Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #f5f4f0;
+  --card: #ffffff;
+  --dark: #0f0f0f;
+  --accent: #1a1aff;
+  --green: #00c853;
+  --red: #ff1744;
+  --yellow: #ffd600;
+  --border: #e0ddd8;
+  --muted: #888880;
+  --text: #1a1a1a;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); font-family:'Outfit',sans-serif; color:var(--text); min-height:100vh; }
+.layout { display:flex; min-height:100vh; }
+.sidebar { width:240px; background:var(--dark); color:white; padding:32px 24px; position:fixed; top:0; left:0; bottom:0; display:flex; flex-direction:column; z-index:10; }
+.logo { font-size:13px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:white; margin-bottom:6px; }
+.logo-sub { font-family:'DM Mono',monospace; font-size:10px; color:#444; letter-spacing:1px; margin-bottom:48px; }
+.nav-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#333; margin-bottom:12px; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:6px; font-size:13px; font-weight:500; color:#666; cursor:pointer; transition:all 0.2s; margin-bottom:4px; text-decoration:none; }
+.nav-item:hover,.nav-item.active { background:rgba(255,255,255,0.08); color:white; }
+.nav-dot { width:6px; height:6px; border-radius:50%; background:#333; }
+.nav-item.active .nav-dot { background:var(--accent); }
+.sidebar-footer { margin-top:auto; font-family:'DM Mono',monospace; font-size:10px; color:#333; line-height:1.8; }
+.main { margin-left:240px; flex:1; padding:40px; max-width:calc(100vw - 240px); }
+.topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:40px; }
+.page-title { font-size:28px; font-weight:700; }
+.page-title span { color:var(--accent); }
+.date-badge { font-family:'DM Mono',monospace; font-size:11px; padding:6px 14px; border:1px solid var(--border); border-radius:20px; color:var(--muted); }
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+.kpi { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; transition:transform 0.2s; }
+.kpi:hover { transform:translateY(-2px); }
+.kpi-label { font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+.kpi-value { font-size:40px; font-weight:900; line-height:1; margin-bottom:8px; }
+.kpi-sub { font-size:12px; color:var(--muted); }
+.kpi-accent { border-top:3px solid var(--accent); }
+.kpi-green { border-top:3px solid var(--green); }
+.kpi-red { border-top:3px solid var(--red); }
+.kpi-yellow { border-top:3px solid var(--yellow); }
+.kpi-accent .kpi-value { color:var(--accent); }
+.kpi-green .kpi-value { color:var(--green); }
+.kpi-red .kpi-value { color:var(--red); }
+.kpi-yellow .kpi-value { color:#cc9900; }
+.charts-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:32px; }
+.chart-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; }
+.chart-card.wide { grid-column:span 2; }
+.chart-title { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+.chart-sub { font-size:11px; color:var(--muted); margin-bottom:20px; }
+.chart-wrap { position:relative; height:200px; }
+.donut-legend { display:flex; flex-direction:column; gap:8px; margin-top:16px; }
+.legend-item { display:flex; align-items:center; justify-content:space-between; font-size:12px; }
+.legend-dot { width:8px; height:8px; border-radius:50%; margin-right:8px; }
+.legend-left { display:flex; align-items:center; }
+.legend-val { font-weight:700; font-family:'DM Mono',monospace; font-size:13px; }
+.table-section { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.table-header { display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:12px; }
+.table-title { font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+.table-controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.filter-pill { font-family:'DM Mono',monospace; font-size:11px; padding:6px 14px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s; }
+.filter-pill:hover { border-color:var(--accent); color:var(--accent); }
+.filter-pill.active { background:var(--accent); color:white; border-color:var(--accent); }
+.filter-pill.active-red { background:var(--red); color:white; border-color:var(--red); }
+.search-box { font-family:'DM Mono',monospace; font-size:11px; padding:6px 14px; border-radius:20px; border:1px solid var(--border); background:var(--bg); color:var(--text); outline:none; width:180px; }
+.search-box:focus { border-color:var(--accent); }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; }
+thead tr { background:#fafaf8; }
+th { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); padding:12px 16px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+td { font-size:12px; padding:12px 16px; border-bottom:1px solid #f5f4f0; white-space:nowrap; font-family:'DM Mono',monospace; }
+tbody tr:hover { background:#fafaf8; }
+tbody tr:last-child td { border-bottom:none; }
+.id-cell { color:var(--muted); font-size:11px; }
+.truncate { max-width:120px; overflow:hidden; text-overflow:ellipsis; }
+.badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; font-family:'Outfit',sans-serif; }
+.badge-valid { background:#e8faf0; color:#00a844; }
+.badge-flagged { background:#fff0f3; color:#cc0033; }
+.badge-berhasil { background:#e8faf0; color:#00a844; }
+.badge-menunggu { background:#fffbeb; color:#b45309; }
+.badge-failed { background:#fff0f3; color:#cc0033; }
+.badge-online { background:#eff6ff; color:#1d4ed8; }
+.badge-offline { background:#f5f3ff; color:#6d28d9; }
+.badge-unknown { background:#f5f5f5; color:#666; }
+.dot { width:5px; height:5px; border-radius:50%; background:currentColor; }
+.empty-row td { text-align:center; padding:48px; color:var(--muted); font-size:13px; }
+@media(max-width:1100px){ .kpi-grid{grid-template-columns:repeat(2,1fr);} .charts-row{grid-template-columns:1fr 1fr;} .chart-card.wide{grid-column:span 2;} }
+@media(max-width:768px){ .sidebar{display:none;} .main{margin-left:0;max-width:100vw;padding:20px;} .kpi-grid{grid-template-columns:repeat(2,1fr);} .charts-row{grid-template-columns:1fr;} .chart-card.wide{grid-column:span 1;} }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">Springer Capital</div>
+    <div class="logo-sub">// Referral Analytics</div>
+    <div class="nav-label">Dashboard</div>
+    <a class="nav-item active" href="#"><span class="nav-dot"></span> Overview</a>
+    <a class="nav-item" href="#"><span class="nav-dot"></span> Referrals</a>
+    <a class="nav-item" href="#"><span class="nav-dot"></span> Fraud Flags</a>
+    <a class="nav-item" href="#"><span class="nav-dot"></span> Rewards</a>
+    <div class="sidebar-footer">Data Engineer Intern<br/>Aadya Anil · 2024<br/>Pipeline v1.0</div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="page-title">Referral <span>Overview</span></div>
+      <div class="date-badge" id="dateBadge"></div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi kpi-accent"><div class="kpi-label">Total Referrals</div><div class="kpi-value" id="kpi-total">—</div><div class="kpi-sub">Records processed</div></div>
+      <div class="kpi kpi-green"><div class="kpi-label">Valid Rewards</div><div class="kpi-value" id="kpi-valid">—</div><div class="kpi-sub">Business logic passed</div></div>
+      <div class="kpi kpi-red"><div class="kpi-label">Flagged / Invalid</div><div class="kpi-value" id="kpi-invalid">—</div><div class="kpi-sub">Potential fraud detected</div></div>
+      <div class="kpi kpi-yellow"><div class="kpi-label">Fraud Rate</div><div class="kpi-value" id="kpi-rate">—</div><div class="kpi-sub">Of total referrals</div></div>
+    </div>
+    <div class="charts-row">
+      <div class="chart-card wide">
+        <div class="chart-title">Referrals by Source & Validity</div>
+        <div class="chart-sub">Valid vs flagged referrals per source category</div>
+        <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Referral Status</div>
+        <div class="chart-sub">Distribution by status</div>
+        <div class="chart-wrap" style="height:160px"><canvas id="donutChart"></canvas></div>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+    </div>
+    <div class="table-section">
+      <div class="table-header">
+        <div class="table-title">Referral Report</div>
+        <div class="table-controls">
+          <button class="filter-pill active" id="pill-all" onclick="filterTable('all')">All</button>
+          <button class="filter-pill" id="pill-valid" onclick="filterTable('valid')">✓ Valid</button>
+          <button class="filter-pill" id="pill-flagged" onclick="filterTable('flagged')">✗ Flagged</button>
+          <input class="search-box" type="text" placeholder="Search..." oninput="searchTable(this.value)"/>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Referral ID</th><th>Source</th><th>Category</th><th>Date</th><th>Referrer</th><th>Homeclub</th><th>Status</th><th>Reward Days</th><th>Txn Status</th><th>Validity</th></tr></thead>
+          <tbody id="tbody"><tr class="empty-row"><td colspan="11">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+let allData=[], currentFilter='all', currentSearch='', barChartInst, donutChartInst;
+document.getElementById('dateBadge').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+Papa.parse('output/referral_report.csv',{
+  download:true, header:true,
+  complete: res => { allData=res.data.filter(r=>r.referral_id&&r.referral_id.trim()); init(); },
+  error: () => { allData=genSample(); init(); document.querySelector('.page-title').innerHTML='Referral <span>Overview</span> <small style="font-size:13px;color:#888;font-weight:400">— demo</small>'; }
+});
+
+function genSample(){
+  const clubs=['PERMATA HIJAU','BENHIL','SENAYAN','KELAPA GADING','SUDIRMAN'];
+  const names=['Ahmad Santoso','Budi Wijaya','Siti Rahayu','Dewi Lestari','Hendra Gunawan'];
+  const sources=['User Sign Up','Draft Transaction','Lead'];
+  const statuses=['Berhasil','Menunggu','Tidak Berhasil'];
+  return Array.from({length:46},(_,i)=>{
+    const src=sources[i%3], st=statuses[i%3];
+    const v=!(i%7===0||i%11===0||i%13===0||i%17===0||i%19===0||i%23===0||i%29===0||i%31===0);
+    return {referral_details_id:101+i,referral_id:Math.random().toString(16).substr(2,32),referral_source:src,referral_source_category:src==='User Sign Up'?'Online':src==='Draft Transaction'?'Offline':'Unknown',referral_at:`2024-05-${String((i%28)+1).padStart(2,'0')} 10:00:00`,referrer_name:names[i%5],referrer_homeclub:clubs[i%5],description:st,num_reward_days:st==='Berhasil'?[10,15,20][i%3]:'',transaction_status:st==='Berhasil'?'Paid':'',is_business_logic_valid:v?'True':'False'};
+  });
+}
+
+function init(){ updateKPIs(); renderCharts(); renderTable(); }
+
+function updateKPIs(){
+  const t=allData.length, v=allData.filter(r=>r.is_business_logic_valid==='True').length, inv=t-v;
+  document.getElementById('kpi-total').textContent=t;
+  document.getElementById('kpi-valid').textContent=v;
+  document.getElementById('kpi-invalid').textContent=inv;
+  document.getElementById('kpi-rate').textContent=t?((inv/t)*100).toFixed(1)+'%':'—';
+}
+
+function renderCharts(){
+  const cats=[...new Set(allData.map(r=>r.referral_source_category||'Unknown'))];
+  const vCounts=cats.map(c=>allData.filter(r=>(r.referral_source_category||'Unknown')===c&&r.is_business_logic_valid==='True').length);
+  const iCounts=cats.map(c=>allData.filter(r=>(r.referral_source_category||'Unknown')===c&&r.is_business_logic_valid==='False').length);
+  if(barChartInst) barChartInst.destroy();
+  barChartInst=new Chart(document.getElementById('barChart'),{type:'bar',data:{labels:cats,datasets:[{label:'Valid',data:vCounts,backgroundColor:'#00c853',borderRadius:4},{label:'Flagged',data:iCounts,backgroundColor:'#ff1744',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{family:'DM Mono',size:11},boxWidth:12}}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Mono',size:11}}},y:{grid:{color:'#f0ede8'},ticks:{font:{family:'DM Mono',size:11},stepSize:1}}}}});
+  const sc={};allData.forEach(r=>{const s=r.description||r.referral_status||'Unknown';sc[s]=(sc[s]||0)+1;});
+  const sl=Object.keys(sc),sv=Object.values(sc),scols={'Berhasil':'#00c853','Menunggu':'#ffd600','Tidak Berhasil':'#ff1744','Unknown':'#ccc'};
+  const cols=sl.map(s=>scols[s]||'#999');
+  if(donutChartInst) donutChartInst.destroy();
+  donutChartInst=new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:sl,datasets:[{data:sv,backgroundColor:cols,borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{display:false}}}});
+  document.getElementById('donutLegend').innerHTML=sl.map((s,i)=>`<div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:${cols[i]}"></div><span>${s}</span></div><span class="legend-val">${sv[i]}</span></div>`).join('');
+}
+
+function getFiltered(){
+  let d=allData;
+  if(currentFilter==='valid') d=d.filter(r=>r.is_business_logic_valid==='True');
+  if(currentFilter==='flagged') d=d.filter(r=>r.is_business_logic_valid==='False');
+  if(currentSearch){const q=currentSearch.toLowerCase();d=d.filter(r=>(r.referral_id||'').toLowerCase().includes(q)||(r.referrer_name||'').toLowerCase().includes(q)||(r.referral_source||'').toLowerCase().includes(q));}
+  return d;
+}
+
+function renderTable(){
+  const data=getFiltered(), tbody=document.getElementById('tbody');
+  if(!data.length){tbody.innerHTML='<tr class="empty-row"><td colspan="11">No records found</td></tr>';return;}
+  const statusMap={Berhasil:'berhasil',Menunggu:'menunggu','Tidak Berhasil':'failed'};
+  const catMap={Online:'online',Offline:'offline',Unknown:'unknown'};
+  tbody.innerHTML=data.map(r=>{
+    const valid=r.is_business_logic_valid==='True';
+    const status=r.description||r.referral_status||'';
+    const cat=r.referral_source_category||'Unknown';
+    return `<tr><td class="id-cell">${r.referral_details_id||''}</td><td class="truncate id-cell" title="${r.referral_id}">${(r.referral_id||'').substring(0,14)}…</td><td>${r.referral_source||''}</td><td><span class="badge badge-${catMap[cat]||'unknown'}">${cat}</span></td><td>${(r.referral_at||'').substring(0,16)}</td><td class="truncate">${r.referrer_name||'—'}</td><td style="font-size:11px">${r.referrer_homeclub||'—'}</td><td><span class="badge badge-${statusMap[status]||'unknown'}"><span class="dot"></span>${status}</span></td><td>${r.num_reward_days||'—'}</td><td>${r.transaction_status||'—'}</td><td><span class="badge ${valid?'badge-valid':'badge-flagged'}"><span class="dot"></span>${valid?'Valid':'Flagged'}</span></td></tr>`;
+  }).join('');
+}
+
+function filterTable(type){
+  currentFilter=type;
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active','active-red'));
+  if(type==='all') document.getElementById('pill-all').classList.add('active');
+  else if(type==='valid') document.getElementById('pill-valid').classList.add('active');
+  else{document.getElementById('pill-flagged').classList.add('active','active-red');}
+  renderTable();
+}
+
+function searchTable(val){ currentSearch=val; renderTable(); }
+</script>
+</body>
+</html>
