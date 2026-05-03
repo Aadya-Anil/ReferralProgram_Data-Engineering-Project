@@ -4,230 +4,567 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Springer Capital — Referral Analytics</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Clash+Display:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root {
-  --bg: #f5f4f0;
-  --card: #ffffff;
-  --dark: #0f0f0f;
-  --accent: #1a1aff;
-  --green: #00c853;
-  --red: #ff1744;
-  --yellow: #ffd600;
-  --border: #e0ddd8;
-  --muted: #888880;
-  --text: #1a1a1a;
+  --bg: #0c0c10;
+  --surface: #13131a;
+  --surface2: #1a1a24;
+  --border: #242430;
+  --accent: #6c63ff;
+  --accent2: #ff6584;
+  --green: #00e5a0;
+  --yellow: #ffd166;
+  --red: #ff6584;
+  --blue: #4cc9f0;
+  --text: #e8e8f0;
+  --muted: #5a5a72;
+  --muted2: #3a3a50;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:var(--bg); font-family:'Outfit',sans-serif; color:var(--text); min-height:100vh; }
-.layout { display:flex; min-height:100vh; }
-.sidebar { width:240px; background:var(--dark); color:white; padding:32px 24px; position:fixed; top:0; left:0; bottom:0; display:flex; flex-direction:column; z-index:10; }
-.logo { font-size:13px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:white; margin-bottom:6px; }
-.logo-sub { font-family:'DM Mono',monospace; font-size:10px; color:#444; letter-spacing:1px; margin-bottom:48px; }
-.nav-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#333; margin-bottom:12px; }
-.nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:6px; font-size:13px; font-weight:500; color:#666; cursor:pointer; transition:all 0.2s; margin-bottom:4px; text-decoration:none; }
-.nav-item:hover,.nav-item.active { background:rgba(255,255,255,0.08); color:white; }
-.nav-dot { width:6px; height:6px; border-radius:50%; background:#333; }
-.nav-item.active .nav-dot { background:var(--accent); }
-.sidebar-footer { margin-top:auto; font-family:'DM Mono',monospace; font-size:10px; color:#333; line-height:1.8; }
-.main { margin-left:240px; flex:1; padding:40px; max-width:calc(100vw - 240px); }
-.topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:40px; }
-.page-title { font-size:28px; font-weight:700; }
-.page-title span { color:var(--accent); }
-.date-badge { font-family:'DM Mono',monospace; font-size:11px; padding:6px 14px; border:1px solid var(--border); border-radius:20px; color:var(--muted); }
-.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
-.kpi { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; transition:transform 0.2s; }
-.kpi:hover { transform:translateY(-2px); }
-.kpi-label { font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
-.kpi-value { font-size:40px; font-weight:900; line-height:1; margin-bottom:8px; }
-.kpi-sub { font-size:12px; color:var(--muted); }
-.kpi-accent { border-top:3px solid var(--accent); }
-.kpi-green { border-top:3px solid var(--green); }
-.kpi-red { border-top:3px solid var(--red); }
-.kpi-yellow { border-top:3px solid var(--yellow); }
-.kpi-accent .kpi-value { color:var(--accent); }
-.kpi-green .kpi-value { color:var(--green); }
-.kpi-red .kpi-value { color:var(--red); }
-.kpi-yellow .kpi-value { color:#cc9900; }
-.charts-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:32px; }
-.chart-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; }
-.chart-card.wide { grid-column:span 2; }
-.chart-title { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
-.chart-sub { font-size:11px; color:var(--muted); margin-bottom:20px; }
-.chart-wrap { position:relative; height:200px; }
-.donut-legend { display:flex; flex-direction:column; gap:8px; margin-top:16px; }
-.legend-item { display:flex; align-items:center; justify-content:space-between; font-size:12px; }
-.legend-dot { width:8px; height:8px; border-radius:50%; margin-right:8px; }
-.legend-left { display:flex; align-items:center; }
-.legend-val { font-weight:700; font-family:'DM Mono',monospace; font-size:13px; }
-.table-section { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
-.table-header { display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:12px; }
-.table-title { font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
-.table-controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-.filter-pill { font-family:'DM Mono',monospace; font-size:11px; padding:6px 14px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s; }
-.filter-pill:hover { border-color:var(--accent); color:var(--accent); }
-.filter-pill.active { background:var(--accent); color:white; border-color:var(--accent); }
-.filter-pill.active-red { background:var(--red); color:white; border-color:var(--red); }
-.search-box { font-family:'DM Mono',monospace; font-size:11px; padding:6px 14px; border-radius:20px; border:1px solid var(--border); background:var(--bg); color:var(--text); outline:none; width:180px; }
-.search-box:focus { border-color:var(--accent); }
-.table-wrap { overflow-x:auto; }
-table { width:100%; border-collapse:collapse; }
-thead tr { background:#fafaf8; }
-th { font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); padding:12px 16px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
-td { font-size:12px; padding:12px 16px; border-bottom:1px solid #f5f4f0; white-space:nowrap; font-family:'DM Mono',monospace; }
-tbody tr:hover { background:#fafaf8; }
+* { margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth; }
+body { background:var(--bg); font-family:'Syne',sans-serif; color:var(--text); display:flex; min-height:100vh; overflow-x:hidden; }
+
+/* SIDEBAR */
+.sidebar {
+  width:220px; background:var(--surface); border-right:1px solid var(--border);
+  position:fixed; top:0; left:0; bottom:0; display:flex; flex-direction:column;
+  padding:28px 0; z-index:100;
+}
+.sidebar-logo { padding:0 24px 32px; border-bottom:1px solid var(--border); }
+.logo-mark { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:3px; color:var(--accent); text-transform:uppercase; margin-bottom:4px; }
+.logo-name { font-size:15px; font-weight:700; color:var(--text); }
+.logo-sub { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); margin-top:2px; }
+.nav { padding:20px 0; flex:1; }
+.nav-section-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--muted2); text-transform:uppercase; padding:0 24px 8px; }
+.nav-link {
+  display:flex; align-items:center; gap:10px; padding:10px 24px;
+  font-size:13px; font-weight:500; color:var(--muted); cursor:pointer;
+  transition:all 0.2s; text-decoration:none; border-left:2px solid transparent;
+  margin-bottom:2px;
+}
+.nav-link:hover { color:var(--text); background:rgba(108,99,255,0.06); }
+.nav-link.active { color:var(--accent); border-left-color:var(--accent); background:rgba(108,99,255,0.1); }
+.nav-icon { width:16px; height:16px; opacity:0.6; }
+.nav-link.active .nav-icon { opacity:1; }
+.sidebar-bottom { padding:20px 24px; border-top:1px solid var(--border); }
+.sidebar-tag { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted2); line-height:1.8; }
+
+/* MAIN */
+.main { margin-left:220px; flex:1; padding:40px; max-width:calc(100vw - 220px); }
+
+/* TOPBAR */
+.topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:48px; }
+.page-eyebrow { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--accent); text-transform:uppercase; margin-bottom:6px; }
+.page-title { font-size:32px; font-weight:800; letter-spacing:-0.5px; }
+.page-title em { color:var(--accent); font-style:normal; }
+.top-meta { display:flex; gap:12px; align-items:center; }
+.meta-pill { font-family:'IBM Plex Mono',monospace; font-size:10px; padding:6px 14px; border:1px solid var(--border); border-radius:2px; color:var(--muted); background:var(--surface); }
+.status-dot { width:6px; height:6px; border-radius:50%; background:var(--green); display:inline-block; margin-right:6px; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+/* SECTIONS */
+.section { margin-bottom:64px; }
+.section-header { display:flex; align-items:baseline; gap:16px; margin-bottom:24px; }
+.section-title { font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--muted); }
+.section-line { flex:1; height:1px; background:var(--border); }
+.section-count { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted2); }
+
+/* KPI GRID */
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:12px; }
+.kpi-grid-2 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.kpi {
+  background:var(--surface); border:1px solid var(--border); border-radius:4px;
+  padding:20px; position:relative; overflow:hidden; transition:border-color 0.2s;
+}
+.kpi:hover { border-color:var(--muted2); }
+.kpi::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.kpi.c-accent::before { background:var(--accent); }
+.kpi.c-green::before { background:var(--green); }
+.kpi.c-yellow::before { background:var(--yellow); }
+.kpi.c-red::before { background:var(--red); }
+.kpi.c-blue::before { background:var(--blue); }
+.kpi-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.kpi-value { font-size:36px; font-weight:800; line-height:1; margin-bottom:6px; letter-spacing:-1px; }
+.kpi.c-accent .kpi-value { color:var(--accent); }
+.kpi.c-green .kpi-value { color:var(--green); }
+.kpi.c-yellow .kpi-value { color:var(--yellow); }
+.kpi.c-red .kpi-value { color:var(--red); }
+.kpi.c-blue .kpi-value { color:var(--blue); }
+.kpi-sub { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); }
+
+/* CHARTS */
+.charts-grid { display:grid; gap:16px; }
+.charts-2col { grid-template-columns:1fr 1fr; }
+.charts-3col { grid-template-columns:2fr 1fr; }
+.charts-equal { grid-template-columns:1fr 1fr 1fr; }
+.chart-card { background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:24px; }
+.chart-card-title { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+.chart-card-sub { font-size:12px; color:var(--muted2); margin-bottom:20px; }
+.chart-wrap { position:relative; }
+.chart-wrap.h160 { height:160px; }
+.chart-wrap.h200 { height:200px; }
+.chart-wrap.h240 { height:240px; }
+.chart-wrap.h280 { height:280px; }
+
+/* FUNNEL */
+.funnel { display:flex; flex-direction:column; gap:8px; }
+.funnel-row { display:flex; align-items:center; gap:12px; }
+.funnel-label { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); width:80px; text-align:right; flex-shrink:0; }
+.funnel-bar-wrap { flex:1; background:var(--surface2); border-radius:2px; height:32px; position:relative; overflow:hidden; }
+.funnel-bar { height:100%; border-radius:2px; display:flex; align-items:center; padding:0 12px; transition:width 1s ease; position:relative; }
+.funnel-bar-label { font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:white; white-space:nowrap; }
+.funnel-val { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); width:40px; flex-shrink:0; }
+
+/* DONUT LEGEND */
+.donut-layout { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:center; }
+.donut-legend { display:flex; flex-direction:column; gap:10px; }
+.legend-row { display:flex; align-items:center; justify-content:space-between; }
+.legend-left { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text); }
+.legend-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.legend-right { font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; }
+
+/* TABLE */
+.table-controls { display:flex; gap:8px; align-items:center; margin-bottom:16px; flex-wrap:wrap; }
+.pill { font-family:'IBM Plex Mono',monospace; font-size:10px; padding:6px 14px; border-radius:2px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s; letter-spacing:1px; }
+.pill:hover { border-color:var(--accent); color:var(--accent); }
+.pill.active { background:var(--accent); color:white; border-color:var(--accent); }
+.pill.active-red { background:var(--red); color:white; border-color:var(--red); }
+.search { font-family:'IBM Plex Mono',monospace; font-size:11px; padding:6px 14px; border-radius:2px; border:1px solid var(--border); background:var(--surface2); color:var(--text); outline:none; width:200px; margin-left:auto; }
+.search:focus { border-color:var(--accent); }
+.table-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:4px; }
+table { width:100%; border-collapse:collapse; font-size:12px; }
+thead { background:var(--surface2); }
+th { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); padding:12px 14px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+td { padding:11px 14px; border-bottom:1px solid var(--border); font-family:'IBM Plex Mono',monospace; white-space:nowrap; color:var(--text); }
 tbody tr:last-child td { border-bottom:none; }
-.id-cell { color:var(--muted); font-size:11px; }
-.truncate { max-width:120px; overflow:hidden; text-overflow:ellipsis; }
-.badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; font-family:'Outfit',sans-serif; }
-.badge-valid { background:#e8faf0; color:#00a844; }
-.badge-flagged { background:#fff0f3; color:#cc0033; }
-.badge-berhasil { background:#e8faf0; color:#00a844; }
-.badge-menunggu { background:#fffbeb; color:#b45309; }
-.badge-failed { background:#fff0f3; color:#cc0033; }
-.badge-online { background:#eff6ff; color:#1d4ed8; }
-.badge-offline { background:#f5f3ff; color:#6d28d9; }
-.badge-unknown { background:#f5f5f5; color:#666; }
-.dot { width:5px; height:5px; border-radius:50%; background:currentColor; }
-.empty-row td { text-align:center; padding:48px; color:var(--muted); font-size:13px; }
-@media(max-width:1100px){ .kpi-grid{grid-template-columns:repeat(2,1fr);} .charts-row{grid-template-columns:1fr 1fr;} .chart-card.wide{grid-column:span 2;} }
-@media(max-width:768px){ .sidebar{display:none;} .main{margin-left:0;max-width:100vw;padding:20px;} .kpi-grid{grid-template-columns:repeat(2,1fr);} .charts-row{grid-template-columns:1fr;} .chart-card.wide{grid-column:span 1;} }
+tbody tr:hover { background:rgba(255,255,255,0.02); }
+.dim { color:var(--muted); font-size:11px; }
+.truncate { max-width:130px; overflow:hidden; text-overflow:ellipsis; }
+.badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:2px; font-size:9px; font-weight:600; letter-spacing:1px; text-transform:uppercase; font-family:'IBM Plex Mono',monospace; }
+.b-valid { background:rgba(0,229,160,0.1); color:var(--green); border:1px solid rgba(0,229,160,0.2); }
+.b-flag { background:rgba(255,101,132,0.1); color:var(--red); border:1px solid rgba(255,101,132,0.2); }
+.b-berhasil { background:rgba(0,229,160,0.1); color:var(--green); }
+.b-menunggu { background:rgba(255,209,102,0.1); color:var(--yellow); }
+.b-failed { background:rgba(255,101,132,0.1); color:var(--red); }
+.b-online { background:rgba(76,201,240,0.1); color:var(--blue); }
+.b-offline { background:rgba(108,99,255,0.1); color:var(--accent); }
+.b-unknown { background:rgba(90,90,114,0.1); color:var(--muted); }
+.bdot { width:4px; height:4px; border-radius:50%; background:currentColor; }
+.empty { text-align:center; padding:48px; color:var(--muted); }
+
+/* REWARD STATUS */
+.reward-bars { display:flex; flex-direction:column; gap:16px; margin-top:8px; }
+.rbar-row { display:flex; flex-direction:column; gap:6px; }
+.rbar-top { display:flex; justify-content:space-between; font-size:12px; }
+.rbar-track { height:8px; background:var(--surface2); border-radius:2px; overflow:hidden; }
+.rbar-fill { height:100%; border-radius:2px; transition:width 1s ease; }
+
+/* RESPONSIVE */
+@media(max-width:1200px) { .kpi-grid,.kpi-grid-2{grid-template-columns:repeat(2,1fr);} .charts-equal{grid-template-columns:1fr 1fr;} }
+@media(max-width:900px) { .sidebar{display:none;} .main{margin-left:0;max-width:100vw;padding:24px;} .charts-2col,.charts-3col,.charts-equal{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
-<div class="layout">
-  <aside class="sidebar">
-    <div class="logo">Springer Capital</div>
-    <div class="logo-sub">// Referral Analytics</div>
-    <div class="nav-label">Dashboard</div>
-    <a class="nav-item active" href="#"><span class="nav-dot"></span> Overview</a>
-    <a class="nav-item" href="#"><span class="nav-dot"></span> Referrals</a>
-    <a class="nav-item" href="#"><span class="nav-dot"></span> Fraud Flags</a>
-    <a class="nav-item" href="#"><span class="nav-dot"></span> Rewards</a>
-    <div class="sidebar-footer">Data Engineer Intern<br/>Aadya Anil · 2024<br/>Pipeline v1.0</div>
-  </aside>
-  <main class="main">
-    <div class="topbar">
-      <div class="page-title">Referral <span>Overview</span></div>
-      <div class="date-badge" id="dateBadge"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">// SC</div>
+    <div class="logo-name">Springer Capital</div>
+    <div class="logo-sub">Referral Intelligence</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section-label">Dashboard</div>
+    <a class="nav-link active" onclick="scrollTo('kpi')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="8" width="3" height="7" fill="currentColor"/><rect x="6" y="5" width="3" height="10" fill="currentColor"/><rect x="11" y="2" width="3" height="13" fill="currentColor"/></svg>
+      KPIs
+    </a>
+    <a class="nav-link" onclick="scrollTo('pipeline')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M2 8h12M8 2l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Pipeline Analysis
+    </a>
+    <a class="nav-link" onclick="scrollTo('rewards')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Rewards
+    </a>
+    <a class="nav-link" onclick="scrollTo('fraud')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M8 2L2 5v4c0 3 2.5 5 6 6 3.5-1 6-3 6-6V5L8 2z" stroke="currentColor" stroke-width="1.5"/><path d="M6 8l1.5 1.5L10 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Fraud Flags
+    </a>
+    <a class="nav-link" onclick="scrollTo('report')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M5 5h6M5 8h6M5 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Full Report
+    </a>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="sidebar-tag">
+      <span class="status-dot"></span>Live Data<br/>
+      Pipeline v1.0 · 2024<br/>
+      Aadya Anil
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <div class="page-eyebrow">// Referral Program</div>
+      <div class="page-title">Analytics <em>Dashboard</em></div>
+    </div>
+    <div class="top-meta">
+      <div class="meta-pill" id="datePill"></div>
+      <div class="meta-pill">46 Records</div>
+    </div>
+  </div>
+
+  <!-- KPI SECTION -->
+  <section class="section" id="kpi">
+    <div class="section-header">
+      <div class="section-title">Key Performance Indicators</div>
+      <div class="section-line"></div>
+      <div class="section-count">8 metrics</div>
     </div>
     <div class="kpi-grid">
-      <div class="kpi kpi-accent"><div class="kpi-label">Total Referrals</div><div class="kpi-value" id="kpi-total">—</div><div class="kpi-sub">Records processed</div></div>
-      <div class="kpi kpi-green"><div class="kpi-label">Valid Rewards</div><div class="kpi-value" id="kpi-valid">—</div><div class="kpi-sub">Business logic passed</div></div>
-      <div class="kpi kpi-red"><div class="kpi-label">Flagged / Invalid</div><div class="kpi-value" id="kpi-invalid">—</div><div class="kpi-sub">Potential fraud detected</div></div>
-      <div class="kpi kpi-yellow"><div class="kpi-label">Fraud Rate</div><div class="kpi-value" id="kpi-rate">—</div><div class="kpi-sub">Of total referrals</div></div>
+      <div class="kpi c-accent"><div class="kpi-label">Total Referrals</div><div class="kpi-value" id="k-total">46</div><div class="kpi-sub">Records processed</div></div>
+      <div class="kpi c-green"><div class="kpi-label">Successful Referrals</div><div class="kpi-value" id="k-success">—</div><div class="kpi-sub">Status: Berhasil</div></div>
+      <div class="kpi c-yellow"><div class="kpi-label">Pending Referrals</div><div class="kpi-value" id="k-pending">—</div><div class="kpi-sub">Status: Menunggu</div></div>
+      <div class="kpi c-red"><div class="kpi-label">Failed Referrals</div><div class="kpi-value" id="k-failed">—</div><div class="kpi-sub">Status: Tidak Berhasil</div></div>
     </div>
-    <div class="charts-row">
-      <div class="chart-card wide">
-        <div class="chart-title">Referrals by Source & Validity</div>
-        <div class="chart-sub">Valid vs flagged referrals per source category</div>
-        <div class="chart-wrap"><canvas id="barChart"></canvas></div>
-      </div>
+    <div class="kpi-grid-2">
+      <div class="kpi c-blue"><div class="kpi-label">Conversion Rate</div><div class="kpi-value" id="k-conv">—</div><div class="kpi-sub">Referral → Success</div></div>
+      <div class="kpi c-green"><div class="kpi-label">Paid Transactions</div><div class="kpi-value" id="k-paid">—</div><div class="kpi-sub">Transaction status: Paid</div></div>
+      <div class="kpi c-accent"><div class="kpi-label">Reward Grant Rate</div><div class="kpi-value" id="k-reward">—</div><div class="kpi-sub">Rewards issued</div></div>
+      <div class="kpi c-yellow"><div class="kpi-label">Active Members</div><div class="kpi-value" id="k-members">—</div><div class="kpi-sub">Unique referrers</div></div>
+    </div>
+  </section>
+
+  <!-- PIPELINE SECTION -->
+  <section class="section" id="pipeline">
+    <div class="section-header">
+      <div class="section-title">Referral Pipeline Analysis</div>
+      <div class="section-line"></div>
+      <div class="section-count">46 total</div>
+    </div>
+    <div class="charts-grid charts-3col" style="margin-bottom:16px;">
+      <!-- FUNNEL -->
       <div class="chart-card">
-        <div class="chart-title">Referral Status</div>
-        <div class="chart-sub">Distribution by status</div>
-        <div class="chart-wrap" style="height:160px"><canvas id="donutChart"></canvas></div>
-        <div class="donut-legend" id="donutLegend"></div>
+        <div class="chart-card-title">Referral Funnel</div>
+        <div class="chart-card-sub">Status breakdown — 46 total</div>
+        <div class="funnel" id="funnelChart"></div>
+      </div>
+      <!-- MONTHLY VOLUME -->
+      <div class="chart-card">
+        <div class="chart-card-title">Monthly Referral Volume</div>
+        <div class="chart-card-sub">Referrals by month</div>
+        <div class="chart-wrap h200"><canvas id="monthlyChart"></canvas></div>
       </div>
     </div>
-    <div class="table-section">
-      <div class="table-header">
-        <div class="table-title">Referral Report</div>
-        <div class="table-controls">
-          <button class="filter-pill active" id="pill-all" onclick="filterTable('all')">All</button>
-          <button class="filter-pill" id="pill-valid" onclick="filterTable('valid')">✓ Valid</button>
-          <button class="filter-pill" id="pill-flagged" onclick="filterTable('flagged')">✗ Flagged</button>
-          <input class="search-box" type="text" placeholder="Search..." oninput="searchTable(this.value)"/>
+    <div class="charts-grid charts-2col">
+      <!-- SOURCE VALIDITY -->
+      <div class="chart-card">
+        <div class="chart-card-title">Referrals by Source & Validity</div>
+        <div class="chart-card-sub">Valid vs flagged per source category</div>
+        <div class="chart-wrap h200"><canvas id="barChart"></canvas></div>
+      </div>
+      <!-- STATUS DONUT -->
+      <div class="chart-card">
+        <div class="chart-card-title">Referral Status Distribution</div>
+        <div class="chart-card-sub">Breakdown by status</div>
+        <div class="donut-layout">
+          <div class="chart-wrap h180"><canvas id="donutChart"></canvas></div>
+          <div class="donut-legend" id="donutLegend"></div>
         </div>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>#</th><th>Referral ID</th><th>Source</th><th>Category</th><th>Date</th><th>Referrer</th><th>Homeclub</th><th>Status</th><th>Reward Days</th><th>Txn Status</th><th>Validity</th></tr></thead>
-          <tbody id="tbody"><tr class="empty-row"><td colspan="11">Loading...</td></tr></tbody>
-        </table>
+    </div>
+  </section>
+
+  <!-- REWARDS SECTION -->
+  <section class="section" id="rewards">
+    <div class="section-header">
+      <div class="section-title">Reward Status</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="charts-grid charts-equal">
+      <!-- REWARD STATUS BARS -->
+      <div class="chart-card">
+        <div class="chart-card-title">Reward Grant Status</div>
+        <div class="chart-card-sub">Granted vs not given</div>
+        <div class="reward-bars" id="rewardBars"></div>
+      </div>
+      <!-- REWARD DAYS DIST -->
+      <div class="chart-card">
+        <div class="chart-card-title">Reward Days Distribution</div>
+        <div class="chart-card-sub">Breakdown by reward amount</div>
+        <div class="chart-wrap h160"><canvas id="rewardDaysChart"></canvas></div>
+      </div>
+      <!-- SOURCE TYPE -->
+      <div class="chart-card">
+        <div class="chart-card-title">Referral Source Types</div>
+        <div class="chart-card-sub">Volume by source</div>
+        <div class="chart-wrap h160"><canvas id="sourceChart"></canvas></div>
       </div>
     </div>
-  </main>
-</div>
-<script>
-let allData=[], currentFilter='all', currentSearch='', barChartInst, donutChartInst;
-document.getElementById('dateBadge').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  </section>
 
-Papa.parse('output/referral_report.csv',{
-  download:true, header:true,
-  complete: res => { allData=res.data.filter(r=>r.referral_id&&r.referral_id.trim()); init(); },
-  error: () => { allData=genSample(); init(); document.querySelector('.page-title').innerHTML='Referral <span>Overview</span> <small style="font-size:13px;color:#888;font-weight:400">— demo</small>'; }
+  <!-- FRAUD SECTION -->
+  <section class="section" id="fraud">
+    <div class="section-header">
+      <div class="section-title">Fraud Flag Analysis</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="charts-grid charts-2col">
+      <div class="chart-card">
+        <div class="chart-card-title">Valid vs Flagged</div>
+        <div class="chart-card-sub">Business logic validation results</div>
+        <div class="donut-layout">
+          <div class="chart-wrap h180"><canvas id="fraudDonut"></canvas></div>
+          <div class="donut-legend" id="fraudLegend"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">Flagged by Source Category</div>
+        <div class="chart-card-sub">Where fraud is concentrated</div>
+        <div class="chart-wrap h200"><canvas id="fraudBySource"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORT SECTION -->
+  <section class="section" id="report">
+    <div class="section-header">
+      <div class="section-title">Full Referral Report</div>
+      <div class="section-line"></div>
+      <div class="section-count" id="rowCount">46 rows</div>
+    </div>
+    <div class="table-controls">
+      <button class="pill active" id="pill-all" onclick="filterTable('all')">All</button>
+      <button class="pill" id="pill-valid" onclick="filterTable('valid')">✓ Valid</button>
+      <button class="pill" id="pill-flag" onclick="filterTable('flag')">✗ Flagged</button>
+      <button class="pill" id="pill-berhasil" onclick="filterTable('berhasil')">Berhasil</button>
+      <button class="pill" id="pill-menunggu" onclick="filterTable('menunggu')">Menunggu</button>
+      <input class="search" type="text" placeholder="Search ID, source, club..." oninput="searchTable(this.value)"/>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Referral ID</th><th>Source</th><th>Category</th><th>Date</th>
+            <th>Homeclub</th><th>Status</th><th>Reward Days</th><th>Txn Status</th><th>Location</th><th>Validity</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+const DATA = [{"referral_details_id":101,"referral_id":"9331c8f144dad5a3b8e4a10467b4343a","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-01 12:17:31","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":102,"referral_id":"6371079a92bcbf0c16ae5fcdf4fc9c10","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-04-22 22:04:57","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":103,"referral_id":"a49105b02e690472452527663559d97a","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 21:10:16","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":"Paid","transaction_location":"GREENVILLE","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":104,"referral_id":"fcb804c8ff24e5b2974a7e965ebea5e8","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-04-18 10:56:22","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":105,"referral_id":"9e9324e6fde29bb0d230654b38ccfdd4","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-14 13:17:03","referrer_homeclub":"PLUIT","referral_status":"Berhasil","num_reward_days":20,"transaction_status":"Paid","transaction_location":"ADITYAWARMAN","is_reward_granted":true,"is_business_logic_valid":true},{"referral_details_id":106,"referral_id":"b6732d2ca0bc7acbc1b39cb8a04a96cd","referral_source":"Lead","referral_source_category":"Unknown","referral_at":"2024-05-22 16:03:10","referrer_homeclub":"BLOK M","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":107,"referral_id":"835e990334fe52dec832043f19ddfd07","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-13 17:23:46","referrer_homeclub":"PLUIT","referral_status":"Berhasil","num_reward_days":10,"transaction_status":"Paid","transaction_location":"ADITYAWARMAN","is_reward_granted":true,"is_business_logic_valid":true},{"referral_details_id":108,"referral_id":"6667436490ad3c794a8f5127772d4810","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 21:06:39","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":"Paid","transaction_location":"BENHIL","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":109,"referral_id":"d452feec722a5cabc03645bb089e2735","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-03-20 14:48:49","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":10,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":110,"referral_id":"a95d6a6cefee850333bb2df257cb2f79","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-21 17:47:11","referrer_homeclub":"SUNSET ROAD","referral_status":"Berhasil","num_reward_days":10,"transaction_status":"Paid","transaction_location":"ADITYAWARMAN","is_reward_granted":true,"is_business_logic_valid":true},{"referral_details_id":111,"referral_id":"6a585aa172036ab3cda99023016c7bff","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 21:59:57","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":"Paid","transaction_location":"GREENVILLE","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":112,"referral_id":"678d8990730250f8001c25a7da8f05d4","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-03-08 18:31:24","referrer_homeclub":"ADITYAWARMAN","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":true,"is_business_logic_valid":true},{"referral_details_id":113,"referral_id":"1f44ffca9257eefe62892409bce4b704","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-03 09:00:59","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"BENHIL","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":114,"referral_id":"7bf019d6eec0fc5f6485fb4d1968fe80","referral_source":"Lead","referral_source_category":"Unknown","referral_at":"2024-05-22 15:47:24","referrer_homeclub":"BLOK M","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":115,"referral_id":"d0c11363fa2754323ed04ddbd0681bfb","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-04-30 20:54:15","referrer_homeclub":"BLOK M","referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":116,"referral_id":"41b807ac2774a0a29be25266d73fcf8b","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-11 00:13:57","referrer_homeclub":"BLOK M","referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":117,"referral_id":"2751eafffb38a7baf6c35f8bfb5e58e8","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 14:53:43","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"ARTERI PONDOK INDAH","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":118,"referral_id":"2d07be15757d1ea6d85b96f4d46c4a37","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-05-10 11:16:29","referrer_homeclub":"PLUIT","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":119,"referral_id":"d47843579ed8d4696b0abfbed179320f","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-22 14:24:50","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":120,"referral_id":"90abb7a3fab6efe0f5017b11df3c2ffc","referral_source":"Lead","referral_source_category":"Offline","referral_at":"2024-05-06 15:02:16","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":121,"referral_id":"251cb17f5a0a266d4eec7f3f478ad245","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-05-13 13:38:59","referrer_homeclub":"BLOK M","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":122,"referral_id":"79096365084a0d3f51ad9a0725f6708f","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 13:34:13","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":123,"referral_id":"61717d106753428549731b63554d70a5","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-05-13 13:31:40","referrer_homeclub":"BLOK M","referral_status":"Tidak Berhasil","num_reward_days":10,"transaction_status":null,"transaction_location":null,"is_reward_granted":true,"is_business_logic_valid":false},{"referral_details_id":124,"referral_id":"3c2d868e7310b1690f1e7429d04b4c6b","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-01 12:22:16","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":10,"transaction_status":null,"transaction_location":null,"is_reward_granted":true,"is_business_logic_valid":false},{"referral_details_id":125,"referral_id":"bfdc4ba9d1e89cd5f19ed6d239b7b06a","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-16 11:52:59","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"ADITYAWARMAN","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":126,"referral_id":"30a0cdbe9f518b9938bf9b9399f8b048","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-04-16 14:09:25","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":127,"referral_id":"b7056002e75cd4b2583d8e8ee401e230","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-20 11:23:21","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"ARTERI PONDOK INDAH","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":128,"referral_id":"3c2d4fcbb8d1bf5e82407fbae76b9917","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 11:49:01","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"ARTERI PONDOK INDAH","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":129,"referral_id":"8882f8f02e658bd06627f9e0aedf9325","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-03-20 14:49:17","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":20,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":130,"referral_id":"e066aaa1b0384cd538e5590be41ce325","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-01 12:07:31","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"SUNSET ROAD","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":131,"referral_id":"ca06593605d62bc27dacb93533278f44","referral_source":"Lead","referral_source_category":"Unknown","referral_at":"2024-05-24 11:57:33","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":132,"referral_id":"70ab7f982d360286a79c8a3050f5506d","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-04-23 11:55:40","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":133,"referral_id":"24a62000845ed37ef32e5f5b697480c1","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 20:46:38","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":"Paid","transaction_location":"GREENVILLE","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":134,"referral_id":"7a03e01e0c17b2322845242a796adb5e","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-04-22 22:04:57","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":15,"transaction_status":null,"transaction_location":null,"is_reward_granted":true,"is_business_logic_valid":false},{"referral_details_id":135,"referral_id":"636f4143f3bbe2a832d3f8e3c7b7d848","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-05-05 19:03:23","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":136,"referral_id":"e6d2c72313e5d1a77ab02e20e3ba4ecb","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-04-23 11:55:40","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":137,"referral_id":"9aa929850a37a7071f8ea0cd62fcfb07","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-22 15:40:10","referrer_homeclub":"BLOK M","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":138,"referral_id":"4df44c256adf2c9cbb3655104f8dc395","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-06 15:09:35","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":139,"referral_id":"e3a55877243e31f6196748c21f7e2982","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-13 11:11:39","referrer_homeclub":"ARTERI PONDOK INDAH","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":140,"referral_id":"24e66dee053da38b3a19bfb9e91e8faf","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-22 09:22:58","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":141,"referral_id":"c848ba4844ae65f2420d373efc5908c9","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 15:21:11","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":142,"referral_id":"e4b21d1dcdb37955b9e46b9357c7d0fe","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-03-14 15:56:33","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":143,"referral_id":"e74f3e7cae96a2c81a7970ec3a8ccb82","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-05-10 14:08:12","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":144,"referral_id":"962788593e04380982da789b978dcad6","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-13 10:30:51","referrer_homeclub":"PLUIT","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":145,"referral_id":"274ef52f2f70dbb3afa5c94bcbff41cb","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-13 16:47:45","referrer_homeclub":"PLUIT","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":146,"referral_id":"c98844d50327681160b17baa8756984a","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 11:19:27","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"MAMPANG","is_reward_granted":false,"is_business_logic_valid":true}];
+
+// ── INIT ──────────────────────────────────────────────────────────────
+document.getElementById('datePill').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+const total = DATA.length;
+const success = DATA.filter(r=>r.referral_status==='Berhasil').length;
+const pending = DATA.filter(r=>r.referral_status==='Menunggu').length;
+const failed = DATA.filter(r=>r.referral_status==='Tidak Berhasil').length;
+const paid = DATA.filter(r=>r.transaction_status==='Paid').length;
+const granted = DATA.filter(r=>r.is_reward_granted===true).length;
+const valid = DATA.filter(r=>r.is_business_logic_valid===true).length;
+const invalid = total - valid;
+const uniqueReferrers = new Set(DATA.filter(r=>r.referrer_homeclub).map(r=>r.referrer_homeclub)).size;
+
+// KPIs
+document.getElementById('k-total').textContent = total;
+document.getElementById('k-success').textContent = success;
+document.getElementById('k-pending').textContent = pending;
+document.getElementById('k-failed').textContent = failed;
+document.getElementById('k-conv').textContent = ((success/total)*100).toFixed(1)+'%';
+document.getElementById('k-paid').textContent = paid;
+document.getElementById('k-reward').textContent = ((granted/total)*100).toFixed(1)+'%';
+document.getElementById('k-members').textContent = uniqueReferrers;
+
+// ── FUNNEL ────────────────────────────────────────────────────────────
+const funnelData = [
+  {label:'Total',val:total,color:'#6c63ff',pct:100},
+  {label:'Pending',val:pending,color:'#ffd166',pct:(pending/total*100)},
+  {label:'Failed',val:failed,color:'#ff6584',pct:(failed/total*100)},
+  {label:'Success',val:success,color:'#00e5a0',pct:(success/total*100)},
+];
+document.getElementById('funnelChart').innerHTML = funnelData.map(f=>`
+  <div class="funnel-row">
+    <div class="funnel-label">${f.label}</div>
+    <div class="funnel-bar-wrap">
+      <div class="funnel-bar" style="width:${f.pct}%;background:${f.color}20;border-left:3px solid ${f.color}">
+        <span class="funnel-bar-label" style="color:${f.color}">${f.val}</span>
+      </div>
+    </div>
+    <div class="funnel-val" style="color:${f.color}">${f.pct.toFixed(0)}%</div>
+  </div>`).join('');
+
+// ── MONTHLY CHART ──────────────────────────────────────────────────────
+const months = {};
+DATA.forEach(r=>{
+  const m = r.referral_at.substring(0,7);
+  months[m] = (months[m]||0)+1;
+});
+const mLabels = Object.keys(months).sort();
+const mVals = mLabels.map(m=>months[m]);
+const mDisplay = mLabels.map(m=>{const d=new Date(m+'-01');return d.toLocaleDateString('en-US',{month:'short',year:'2-digit'});});
+new Chart(document.getElementById('monthlyChart'),{
+  type:'bar',
+  data:{labels:mDisplay,datasets:[{data:mVals,backgroundColor:'rgba(108,99,255,0.6)',borderColor:'#6c63ff',borderWidth:1,borderRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},stepSize:5}}}}
 });
 
-function genSample(){
-  const clubs=['PERMATA HIJAU','BENHIL','SENAYAN','KELAPA GADING','SUDIRMAN'];
-  const names=['Ahmad Santoso','Budi Wijaya','Siti Rahayu','Dewi Lestari','Hendra Gunawan'];
-  const sources=['User Sign Up','Draft Transaction','Lead'];
-  const statuses=['Berhasil','Menunggu','Tidak Berhasil'];
-  return Array.from({length:46},(_,i)=>{
-    const src=sources[i%3], st=statuses[i%3];
-    const v=!(i%7===0||i%11===0||i%13===0||i%17===0||i%19===0||i%23===0||i%29===0||i%31===0);
-    return {referral_details_id:101+i,referral_id:Math.random().toString(16).substr(2,32),referral_source:src,referral_source_category:src==='User Sign Up'?'Online':src==='Draft Transaction'?'Offline':'Unknown',referral_at:`2024-05-${String((i%28)+1).padStart(2,'0')} 10:00:00`,referrer_name:names[i%5],referrer_homeclub:clubs[i%5],description:st,num_reward_days:st==='Berhasil'?[10,15,20][i%3]:'',transaction_status:st==='Berhasil'?'Paid':'',is_business_logic_valid:v?'True':'False'};
-  });
-}
+// ── BAR CHART ──────────────────────────────────────────────────────────
+const cats=[...new Set(DATA.map(r=>r.referral_source_category||'Unknown'))];
+const vC=cats.map(c=>DATA.filter(r=>(r.referral_source_category||'Unknown')===c&&r.is_business_logic_valid===true).length);
+const iC=cats.map(c=>DATA.filter(r=>(r.referral_source_category||'Unknown')===c&&r.is_business_logic_valid===false).length);
+new Chart(document.getElementById('barChart'),{
+  type:'bar',
+  data:{labels:cats,datasets:[{label:'Valid',data:vC,backgroundColor:'rgba(0,229,160,0.7)',borderRadius:3},{label:'Flagged',data:iC,backgroundColor:'rgba(255,101,132,0.7)',borderRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},boxWidth:10}}},scales:{x:{grid:{display:false},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},stepSize:5}}}}
+});
 
-function init(){ updateKPIs(); renderCharts(); renderTable(); }
+// ── DONUT ──────────────────────────────────────────────────────────────
+const statusColors={'Berhasil':'#00e5a0','Menunggu':'#ffd166','Tidak Berhasil':'#ff6584'};
+const statusData=[{l:'Berhasil',v:success},{l:'Menunggu',v:pending},{l:'Tidak Berhasil',v:failed}];
+new Chart(document.getElementById('donutChart'),{
+  type:'doughnut',
+  data:{labels:statusData.map(s=>s.l),datasets:[{data:statusData.map(s=>s.v),backgroundColor:statusData.map(s=>statusColors[s.l]),borderWidth:0,hoverOffset:4}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}
+});
+document.getElementById('donutLegend').innerHTML=statusData.map(s=>`
+  <div class="legend-row">
+    <div class="legend-left"><div class="legend-dot" style="background:${statusColors[s.l]}"></div>${s.l}</div>
+    <div class="legend-right" style="color:${statusColors[s.l]}">${s.v}</div>
+  </div>`).join('');
 
-function updateKPIs(){
-  const t=allData.length, v=allData.filter(r=>r.is_business_logic_valid==='True').length, inv=t-v;
-  document.getElementById('kpi-total').textContent=t;
-  document.getElementById('kpi-valid').textContent=v;
-  document.getElementById('kpi-invalid').textContent=inv;
-  document.getElementById('kpi-rate').textContent=t?((inv/t)*100).toFixed(1)+'%':'—';
-}
+// ── REWARD BARS ────────────────────────────────────────────────────────
+const rewardItems=[
+  {label:'Reward Granted',val:granted,total:total,color:'#00e5a0'},
+  {label:'Not Given',val:total-granted,total:total,color:'#ff6584'},
+];
+document.getElementById('rewardBars').innerHTML=rewardItems.map(r=>`
+  <div class="rbar-row">
+    <div class="rbar-top"><span>${r.label}</span><span style="color:${r.color};font-family:'IBM Plex Mono',monospace;font-size:12px">${r.val} (${(r.val/r.total*100).toFixed(1)}%)</span></div>
+    <div class="rbar-track"><div class="rbar-fill" style="width:${(r.val/r.total*100).toFixed(1)}%;background:${r.color}"></div></div>
+  </div>`).join('');
 
-function renderCharts(){
-  const cats=[...new Set(allData.map(r=>r.referral_source_category||'Unknown'))];
-  const vCounts=cats.map(c=>allData.filter(r=>(r.referral_source_category||'Unknown')===c&&r.is_business_logic_valid==='True').length);
-  const iCounts=cats.map(c=>allData.filter(r=>(r.referral_source_category||'Unknown')===c&&r.is_business_logic_valid==='False').length);
-  if(barChartInst) barChartInst.destroy();
-  barChartInst=new Chart(document.getElementById('barChart'),{type:'bar',data:{labels:cats,datasets:[{label:'Valid',data:vCounts,backgroundColor:'#00c853',borderRadius:4},{label:'Flagged',data:iCounts,backgroundColor:'#ff1744',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{family:'DM Mono',size:11},boxWidth:12}}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Mono',size:11}}},y:{grid:{color:'#f0ede8'},ticks:{font:{family:'DM Mono',size:11},stepSize:1}}}}});
-  const sc={};allData.forEach(r=>{const s=r.description||r.referral_status||'Unknown';sc[s]=(sc[s]||0)+1;});
-  const sl=Object.keys(sc),sv=Object.values(sc),scols={'Berhasil':'#00c853','Menunggu':'#ffd600','Tidak Berhasil':'#ff1744','Unknown':'#ccc'};
-  const cols=sl.map(s=>scols[s]||'#999');
-  if(donutChartInst) donutChartInst.destroy();
-  donutChartInst=new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:sl,datasets:[{data:sv,backgroundColor:cols,borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{display:false}}}});
-  document.getElementById('donutLegend').innerHTML=sl.map((s,i)=>`<div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:${cols[i]}"></div><span>${s}</span></div><span class="legend-val">${sv[i]}</span></div>`).join('');
-}
+// ── REWARD DAYS ────────────────────────────────────────────────────────
+const rdCounts={};
+DATA.forEach(r=>{ if(r.num_reward_days){const k=r.num_reward_days+' days';rdCounts[k]=(rdCounts[k]||0)+1;} });
+rdCounts['None']=(DATA.filter(r=>!r.num_reward_days).length);
+new Chart(document.getElementById('rewardDaysChart'),{
+  type:'doughnut',
+  data:{labels:Object.keys(rdCounts),datasets:[{data:Object.values(rdCounts),backgroundColor:['#6c63ff','#00e5a0','#ffd166','#3a3a50'],borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:9},boxWidth:8,padding:8}}}}
+});
+
+// ── SOURCE CHART ───────────────────────────────────────────────────────
+const srcCounts={};DATA.forEach(r=>{srcCounts[r.referral_source]=(srcCounts[r.referral_source]||0)+1;});
+new Chart(document.getElementById('sourceChart'),{
+  type:'bar',
+  data:{labels:Object.keys(srcCounts),datasets:[{data:Object.values(srcCounts),backgroundColor:['#6c63ff','#00e5a0','#ffd166'],borderRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:9}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},stepSize:5}}}}
+});
+
+// ── FRAUD DONUT ────────────────────────────────────────────────────────
+new Chart(document.getElementById('fraudDonut'),{
+  type:'doughnut',
+  data:{labels:['Valid','Flagged'],datasets:[{data:[valid,invalid],backgroundColor:['#00e5a0','#ff6584'],borderWidth:0,hoverOffset:4}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}
+});
+document.getElementById('fraudLegend').innerHTML=[
+  {l:'Valid',v:valid,c:'#00e5a0'},{l:'Flagged',v:invalid,c:'#ff6584'}
+].map(s=>`<div class="legend-row"><div class="legend-left"><div class="legend-dot" style="background:${s.c}"></div>${s.l}</div><div class="legend-right" style="color:${s.c}">${s.v} (${(s.v/total*100).toFixed(1)}%)</div></div>`).join('');
+
+// ── FRAUD BY SOURCE ────────────────────────────────────────────────────
+const fraudBySrc={};
+DATA.filter(r=>!r.is_business_logic_valid).forEach(r=>{const c=r.referral_source_category||'Unknown';fraudBySrc[c]=(fraudBySrc[c]||0)+1;});
+new Chart(document.getElementById('fraudBySource'),{
+  type:'bar',
+  data:{labels:Object.keys(fraudBySrc),datasets:[{label:'Flagged',data:Object.values(fraudBySrc),backgroundColor:'rgba(255,101,132,0.7)',borderRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},stepSize:1}}}}
+});
+
+// ── TABLE ──────────────────────────────────────────────────────────────
+let currentFilter='all', currentSearch='';
 
 function getFiltered(){
-  let d=allData;
-  if(currentFilter==='valid') d=d.filter(r=>r.is_business_logic_valid==='True');
-  if(currentFilter==='flagged') d=d.filter(r=>r.is_business_logic_valid==='False');
-  if(currentSearch){const q=currentSearch.toLowerCase();d=d.filter(r=>(r.referral_id||'').toLowerCase().includes(q)||(r.referrer_name||'').toLowerCase().includes(q)||(r.referral_source||'').toLowerCase().includes(q));}
+  let d=DATA;
+  if(currentFilter==='valid') d=d.filter(r=>r.is_business_logic_valid===true);
+  if(currentFilter==='flag') d=d.filter(r=>r.is_business_logic_valid===false);
+  if(currentFilter==='berhasil') d=d.filter(r=>r.referral_status==='Berhasil');
+  if(currentFilter==='menunggu') d=d.filter(r=>r.referral_status==='Menunggu');
+  if(currentSearch){const q=currentSearch.toLowerCase();d=d.filter(r=>(r.referral_id||'').toLowerCase().includes(q)||(r.referral_source||'').toLowerCase().includes(q)||(r.referrer_homeclub||'').toLowerCase().includes(q)||(r.referral_status||'').toLowerCase().includes(q));}
   return d;
 }
 
 function renderTable(){
-  const data=getFiltered(), tbody=document.getElementById('tbody');
-  if(!data.length){tbody.innerHTML='<tr class="empty-row"><td colspan="11">No records found</td></tr>';return;}
-  const statusMap={Berhasil:'berhasil',Menunggu:'menunggu','Tidak Berhasil':'failed'};
-  const catMap={Online:'online',Offline:'offline',Unknown:'unknown'};
-  tbody.innerHTML=data.map(r=>{
-    const valid=r.is_business_logic_valid==='True';
-    const status=r.description||r.referral_status||'';
+  const data=getFiltered();
+  document.getElementById('rowCount').textContent=data.length+' rows';
+  const sm={'Berhasil':'b-berhasil','Menunggu':'b-menunggu','Tidak Berhasil':'b-failed'};
+  const cm={'Online':'b-online','Offline':'b-offline','Unknown':'b-unknown'};
+  document.getElementById('tbody').innerHTML=data.length?data.map(r=>{
+    const v=r.is_business_logic_valid===true;
     const cat=r.referral_source_category||'Unknown';
-    return `<tr><td class="id-cell">${r.referral_details_id||''}</td><td class="truncate id-cell" title="${r.referral_id}">${(r.referral_id||'').substring(0,14)}…</td><td>${r.referral_source||''}</td><td><span class="badge badge-${catMap[cat]||'unknown'}">${cat}</span></td><td>${(r.referral_at||'').substring(0,16)}</td><td class="truncate">${r.referrer_name||'—'}</td><td style="font-size:11px">${r.referrer_homeclub||'—'}</td><td><span class="badge badge-${statusMap[status]||'unknown'}"><span class="dot"></span>${status}</span></td><td>${r.num_reward_days||'—'}</td><td>${r.transaction_status||'—'}</td><td><span class="badge ${valid?'badge-valid':'badge-flagged'}"><span class="dot"></span>${valid?'Valid':'Flagged'}</span></td></tr>`;
-  }).join('');
+    return `<tr>
+      <td class="dim">${r.referral_details_id}</td>
+      <td class="truncate dim" title="${r.referral_id}">${r.referral_id.substring(0,14)}…</td>
+      <td>${r.referral_source}</td>
+      <td><span class="badge ${cm[cat]||'b-unknown'}">${cat}</span></td>
+      <td class="dim">${r.referral_at.substring(0,10)}</td>
+      <td>${r.referrer_homeclub||'—'}</td>
+      <td><span class="badge ${sm[r.referral_status]||'b-unknown'}"><span class="bdot"></span>${r.referral_status}</span></td>
+      <td>${r.num_reward_days||'—'}</td>
+      <td>${r.transaction_status||'—'}</td>
+      <td>${r.transaction_location||'—'}</td>
+      <td><span class="badge ${v?'b-valid':'b-flag'}"><span class="bdot"></span>${v?'Valid':'Flagged'}</span></td>
+    </tr>`;
+  }).join(''):'<tr><td colspan="11" class="empty">No records found</td></tr>';
 }
 
 function filterTable(type){
   currentFilter=type;
-  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active','active-red'));
-  if(type==='all') document.getElementById('pill-all').classList.add('active');
-  else if(type==='valid') document.getElementById('pill-valid').classList.add('active');
-  else{document.getElementById('pill-flagged').classList.add('active','active-red');}
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active','active-red'));
+  const el=document.getElementById('pill-'+type);
+  if(el){if(type==='flag')el.classList.add('active','active-red');else el.classList.add('active');}
   renderTable();
 }
 
-function searchTable(val){ currentSearch=val; renderTable(); }
+function searchTable(v){currentSearch=v;renderTable();}
+
+renderTable();
+
+// ── SCROLL NAV ─────────────────────────────────────────────────────────
+function scrollTo(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// Active nav on scroll
+const sections=['kpi','pipeline','rewards','fraud','report'];
+window.addEventListener('scroll',()=>{
+  const scrollY=window.scrollY+120;
+  sections.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&el.offsetTop<=scrollY&&el.offsetTop+el.offsetHeight>scrollY){
+      document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+      const links=document.querySelectorAll('.nav-link');
+      const idx=sections.indexOf(id);
+      if(links[idx])links[idx].classList.add('active');
+    }
+  });
+});
 </script>
 </body>
 </html>
