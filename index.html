@@ -172,7 +172,7 @@ tbody tr:hover { background:rgba(255,255,255,0.02); }
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="logo-name">Springer Capital</div>
-    <div class="logo-sub">DE Final Assessment</div>
+    <div class="logo-sub">Data Engineer Final Assessment</div>
   </div>
   <nav class="nav">
     <div class="nav-section-label">Dashboard</div>
@@ -548,9 +548,12 @@ renderTable();
 
 //  SCROLL NAV 
 function scrollTo(id){
-  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
   document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  const idx = ['kpi','pipeline','rewards','fraud','report'].indexOf(id);
+  const links = document.querySelectorAll('.nav-link');
+  if(links[idx]) links[idx].classList.add('active');
 }
 
 // Active nav on scroll
