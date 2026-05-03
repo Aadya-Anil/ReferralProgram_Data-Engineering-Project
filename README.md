@@ -72,6 +72,9 @@ python main.py
 
 ## Output
 The pipeline generates `output/referral_report.csv` with 46 rows containing referral details and a boolean `is_business_logic_valid` column indicating whether each referral reward is valid or potentially fraudulent.
+To view the visualisation of the project, click the link below. 
 
-<img width="2100" height="1275" alt="Springer Capital — Referral Analytics_page-0001" src="https://github.com/user-attachments/assets/8cdad390-178e-4678-b426-2be93ebb6a2a" />
+Live Vercel link : https://referral-program-data-engineering.vercel.app
+
+<img width="2520" height="1530" alt="Springer Capital — Referral Analytics_1" src="https://github.com/user-attachments/assets/8029bb03-db38-4704-9789-342f15605c32" />
 
