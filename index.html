@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Springer Capital — Referral Analytics</title>
+<title>Referral Analytics-DE Final Assessment</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Clash+Display:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -166,11 +166,214 @@ tbody tr:hover { background:rgba(255,255,255,0.02); }
 </style>
 </head>
 <body>
+<script>
+// DATA
+const DATA = [{"referral_details_id":101,"referral_id":"9331c8f144dad5a3b8e4a10467b4343a","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-01 12:17:31","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":102,"referral_id":"6371079a92bcbf0c16ae5fcdf4fc9c10","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-04-22 22:04:57","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":103,"referral_id":"a49105b02e690472452527663559d97a","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 21:10:16","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":"Paid","transaction_location":"GREENVILLE","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":104,"referral_id":"fcb804c8ff24e5b2974a7e965ebea5e8","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-04-18 10:56:22","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":105,"referral_id":"9e9324e6fde29bb0d230654b38ccfdd4","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-14 13:17:03","referrer_homeclub":"PLUIT","referral_status":"Berhasil","num_reward_days":20,"transaction_status":"Paid","transaction_location":"ADITYAWARMAN","is_reward_granted":true,"is_business_logic_valid":true},{"referral_details_id":106,"referral_id":"b6732d2ca0bc7acbc1b39cb8a04a96cd","referral_source":"Lead","referral_source_category":"Unknown","referral_at":"2024-05-22 16:03:10","referrer_homeclub":"BLOK M","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":107,"referral_id":"835e990334fe52dec832043f19ddfd07","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-13 17:23:46","referrer_homeclub":"PLUIT","referral_status":"Berhasil","num_reward_days":10,"transaction_status":"Paid","transaction_location":"ADITYAWARMAN","is_reward_granted":true,"is_business_logic_valid":true},{"referral_details_id":108,"referral_id":"6667436490ad3c794a8f5127772d4810","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 21:06:39","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":"Paid","transaction_location":"BENHIL","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":109,"referral_id":"d452feec722a5cabc03645bb089e2735","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-03-20 14:48:49","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":10,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":110,"referral_id":"a95d6a6cefee850333bb2df257cb2f79","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-21 17:47:11","referrer_homeclub":"SUNSET ROAD","referral_status":"Berhasil","num_reward_days":10,"transaction_status":"Paid","transaction_location":"ADITYAWARMAN","is_reward_granted":true,"is_business_logic_valid":true},{"referral_details_id":111,"referral_id":"6a585aa172036ab3cda99023016c7bff","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 21:59:57","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":"Paid","transaction_location":"GREENVILLE","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":112,"referral_id":"678d8990730250f8001c25a7da8f05d4","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-03-08 18:31:24","referrer_homeclub":"ADITYAWARMAN","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":true,"is_business_logic_valid":true},{"referral_details_id":113,"referral_id":"1f44ffca9257eefe62892409bce4b704","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-03 09:00:59","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"BENHIL","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":114,"referral_id":"7bf019d6eec0fc5f6485fb4d1968fe80","referral_source":"Lead","referral_source_category":"Unknown","referral_at":"2024-05-22 15:47:24","referrer_homeclub":"BLOK M","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":115,"referral_id":"d0c11363fa2754323ed04ddbd0681bfb","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-04-30 20:54:15","referrer_homeclub":"BLOK M","referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":116,"referral_id":"41b807ac2774a0a29be25266d73fcf8b","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-11 00:13:57","referrer_homeclub":"BLOK M","referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":117,"referral_id":"2751eafffb38a7baf6c35f8bfb5e58e8","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 14:53:43","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"ARTERI PONDOK INDAH","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":118,"referral_id":"2d07be15757d1ea6d85b96f4d46c4a37","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-05-10 11:16:29","referrer_homeclub":"PLUIT","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":119,"referral_id":"d47843579ed8d4696b0abfbed179320f","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-22 14:24:50","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":120,"referral_id":"90abb7a3fab6efe0f5017b11df3c2ffc","referral_source":"Lead","referral_source_category":"Offline","referral_at":"2024-05-06 15:02:16","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":121,"referral_id":"251cb17f5a0a266d4eec7f3f478ad245","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-05-13 13:38:59","referrer_homeclub":"BLOK M","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":122,"referral_id":"79096365084a0d3f51ad9a0725f6708f","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 13:34:13","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":123,"referral_id":"61717d106753428549731b63554d70a5","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-05-13 13:31:40","referrer_homeclub":"BLOK M","referral_status":"Tidak Berhasil","num_reward_days":10,"transaction_status":null,"transaction_location":null,"is_reward_granted":true,"is_business_logic_valid":false},{"referral_details_id":124,"referral_id":"3c2d868e7310b1690f1e7429d04b4c6b","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-01 12:22:16","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":10,"transaction_status":null,"transaction_location":null,"is_reward_granted":true,"is_business_logic_valid":false},{"referral_details_id":125,"referral_id":"bfdc4ba9d1e89cd5f19ed6d239b7b06a","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-16 11:52:59","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"ADITYAWARMAN","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":126,"referral_id":"30a0cdbe9f518b9938bf9b9399f8b048","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-04-16 14:09:25","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":127,"referral_id":"b7056002e75cd4b2583d8e8ee401e230","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-20 11:23:21","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"ARTERI PONDOK INDAH","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":128,"referral_id":"3c2d4fcbb8d1bf5e82407fbae76b9917","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 11:49:01","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"ARTERI PONDOK INDAH","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":129,"referral_id":"8882f8f02e658bd06627f9e0aedf9325","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-03-20 14:49:17","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":20,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":130,"referral_id":"e066aaa1b0384cd538e5590be41ce325","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-01 12:07:31","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"SUNSET ROAD","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":131,"referral_id":"ca06593605d62bc27dacb93533278f44","referral_source":"Lead","referral_source_category":"Unknown","referral_at":"2024-05-24 11:57:33","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":132,"referral_id":"70ab7f982d360286a79c8a3050f5506d","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-04-23 11:55:40","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":133,"referral_id":"24a62000845ed37ef32e5f5b697480c1","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 20:46:38","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":"Paid","transaction_location":"GREENVILLE","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":134,"referral_id":"7a03e01e0c17b2322845242a796adb5e","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-04-22 22:04:57","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":15,"transaction_status":null,"transaction_location":null,"is_reward_granted":true,"is_business_logic_valid":false},{"referral_details_id":135,"referral_id":"636f4143f3bbe2a832d3f8e3c7b7d848","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-05-05 19:03:23","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":136,"referral_id":"e6d2c72313e5d1a77ab02e20e3ba4ecb","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-04-23 11:55:40","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":137,"referral_id":"9aa929850a37a7071f8ea0cd62fcfb07","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-22 15:40:10","referrer_homeclub":"BLOK M","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":138,"referral_id":"4df44c256adf2c9cbb3655104f8dc395","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-06 15:09:35","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":139,"referral_id":"e3a55877243e31f6196748c21f7e2982","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-13 11:11:39","referrer_homeclub":"ARTERI PONDOK INDAH","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":140,"referral_id":"24e66dee053da38b3a19bfb9e91e8faf","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-22 09:22:58","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":141,"referral_id":"c848ba4844ae65f2420d373efc5908c9","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 15:21:11","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":142,"referral_id":"e4b21d1dcdb37955b9e46b9357c7d0fe","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-03-14 15:56:33","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":143,"referral_id":"e74f3e7cae96a2c81a7970ec3a8ccb82","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-05-10 14:08:12","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":144,"referral_id":"962788593e04380982da789b978dcad6","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-13 10:30:51","referrer_homeclub":"PLUIT","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":145,"referral_id":"274ef52f2f70dbb3afa5c94bcbff41cb","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-13 16:47:45","referrer_homeclub":"PLUIT","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":146,"referral_id":"c98844d50327681160b17baa8756984a","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 11:19:27","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"MAMPANG","is_reward_granted":false,"is_business_logic_valid":true}];
 
+//INIT
+document.getElementById('datePill').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+const total = DATA.length;
+const success = DATA.filter(r=>r.referral_status==='Berhasil').length;
+const pending = DATA.filter(r=>r.referral_status==='Menunggu').length;
+const failed = DATA.filter(r=>r.referral_status==='Tidak Berhasil').length;
+const paid = DATA.filter(r=>r.transaction_status==='Paid').length;
+const granted = DATA.filter(r=>r.is_reward_granted===true).length;
+const valid = DATA.filter(r=>r.is_business_logic_valid===true).length;
+const invalid = total - valid;
+const uniqueReferrers = new Set(DATA.filter(r=>r.referrer_homeclub).map(r=>r.referrer_homeclub)).size;
+
+// KPIs
+document.getElementById('k-total').textContent = total;
+document.getElementById('k-success').textContent = success;
+document.getElementById('k-pending').textContent = pending;
+document.getElementById('k-failed').textContent = failed;
+document.getElementById('k-conv').textContent = ((success/total)*100).toFixed(1)+'%';
+document.getElementById('k-paid').textContent = paid;
+document.getElementById('k-reward').textContent = ((granted/total)*100).toFixed(1)+'%';
+document.getElementById('k-members').textContent = uniqueReferrers;
+
+//  FUNNEL 
+const funnelData = [
+  {label:'Total',val:total,color:'#6c63ff',pct:100},
+  {label:'Pending',val:pending,color:'#ffd166',pct:(pending/total*100)},
+  {label:'Failed',val:failed,color:'#ff6584',pct:(failed/total*100)},
+  {label:'Success',val:success,color:'#00e5a0',pct:(success/total*100)},
+];
+document.getElementById('funnelChart').innerHTML = funnelData.map(f=>`
+  <div class="funnel-row">
+    <div class="funnel-label">${f.label}</div>
+    <div class="funnel-bar-wrap">
+      <div class="funnel-bar" style="width:${f.pct}%;background:${f.color}20;border-left:3px solid ${f.color}">
+        <span class="funnel-bar-label" style="color:${f.color}">${f.val}</span>
+      </div>
+    </div>
+    <div class="funnel-val" style="color:${f.color}">${f.pct.toFixed(0)}%</div>
+  </div>`).join('');
+
+//  MONTHLY CHART 
+const months = {};
+DATA.forEach(r=>{
+  const m = r.referral_at.substring(0,7);
+  months[m] = (months[m]||0)+1;
+});
+const mLabels = Object.keys(months).sort();
+const mVals = mLabels.map(m=>months[m]);
+const mDisplay = mLabels.map(m=>{const d=new Date(m+'-01');return d.toLocaleDateString('en-US',{month:'short',year:'2-digit'});});
+new Chart(document.getElementById('monthlyChart'),{
+  type:'bar',
+  data:{labels:mDisplay,datasets:[{data:mVals,backgroundColor:'rgba(108,99,255,0.6)',borderColor:'#6c63ff',borderWidth:1,borderRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},stepSize:5}}}}
+});
+
+//  BAR CHART 
+const cats=[...new Set(DATA.map(r=>r.referral_source_category||'Unknown'))];
+const vC=cats.map(c=>DATA.filter(r=>(r.referral_source_category||'Unknown')===c&&r.is_business_logic_valid===true).length);
+const iC=cats.map(c=>DATA.filter(r=>(r.referral_source_category||'Unknown')===c&&r.is_business_logic_valid===false).length);
+new Chart(document.getElementById('barChart'),{
+  type:'bar',
+  data:{labels:cats,datasets:[{label:'Valid',data:vC,backgroundColor:'rgba(0,229,160,0.7)',borderRadius:3},{label:'Flagged',data:iC,backgroundColor:'rgba(255,101,132,0.7)',borderRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},boxWidth:10}}},scales:{x:{grid:{display:false},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},stepSize:5}}}}
+});
+
+//  DONUT 
+const statusColors={'Berhasil':'#00e5a0','Menunggu':'#ffd166','Tidak Berhasil':'#ff6584'};
+const statusData=[{l:'Berhasil',v:success},{l:'Menunggu',v:pending},{l:'Tidak Berhasil',v:failed}];
+new Chart(document.getElementById('donutChart'),{
+  type:'doughnut',
+  data:{labels:statusData.map(s=>s.l),datasets:[{data:statusData.map(s=>s.v),backgroundColor:statusData.map(s=>statusColors[s.l]),borderWidth:0,hoverOffset:4}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}
+});
+document.getElementById('donutLegend').innerHTML=statusData.map(s=>`
+  <div class="legend-row">
+    <div class="legend-left"><div class="legend-dot" style="background:${statusColors[s.l]}"></div>${s.l}</div>
+    <div class="legend-right" style="color:${statusColors[s.l]}">${s.v}</div>
+  </div>`).join('');
+
+//  REWARD BARS 
+const rewardItems=[
+  {label:'Reward Granted',val:granted,total:total,color:'#00e5a0'},
+  {label:'Not Given',val:total-granted,total:total,color:'#ff6584'},
+];
+document.getElementById('rewardBars').innerHTML=rewardItems.map(r=>`
+  <div class="rbar-row">
+    <div class="rbar-top"><span>${r.label}</span><span style="color:${r.color};font-family:'IBM Plex Mono',monospace;font-size:12px">${r.val} (${(r.val/r.total*100).toFixed(1)}%)</span></div>
+    <div class="rbar-track"><div class="rbar-fill" style="width:${(r.val/r.total*100).toFixed(1)}%;background:${r.color}"></div></div>
+  </div>`).join('');
+
+//  REWARD DAYS 
+const rdCounts={};
+DATA.forEach(r=>{ if(r.num_reward_days){const k=r.num_reward_days+' days';rdCounts[k]=(rdCounts[k]||0)+1;} });
+rdCounts['None']=(DATA.filter(r=>!r.num_reward_days).length);
+new Chart(document.getElementById('rewardDaysChart'),{
+  type:'doughnut',
+  data:{labels:Object.keys(rdCounts),datasets:[{data:Object.values(rdCounts),backgroundColor:['#6c63ff','#00e5a0','#ffd166','#3a3a50'],borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:9},boxWidth:8,padding:8}}}}
+});
+
+//  SOURCE CHART 
+const srcCounts={};DATA.forEach(r=>{srcCounts[r.referral_source]=(srcCounts[r.referral_source]||0)+1;});
+new Chart(document.getElementById('sourceChart'),{
+  type:'bar',
+  data:{labels:Object.keys(srcCounts),datasets:[{data:Object.values(srcCounts),backgroundColor:['#6c63ff','#00e5a0','#ffd166'],borderRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:9}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},stepSize:5}}}}
+});
+
+//  FRAUD DONUT 
+new Chart(document.getElementById('fraudDonut'),{
+  type:'doughnut',
+  data:{labels:['Valid','Flagged'],datasets:[{data:[valid,invalid],backgroundColor:['#00e5a0','#ff6584'],borderWidth:0,hoverOffset:4}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}
+});
+document.getElementById('fraudLegend').innerHTML=[
+  {l:'Valid',v:valid,c:'#00e5a0'},{l:'Flagged',v:invalid,c:'#ff6584'}
+].map(s=>`<div class="legend-row"><div class="legend-left"><div class="legend-dot" style="background:${s.c}"></div>${s.l}</div><div class="legend-right" style="color:${s.c}">${s.v} (${(s.v/total*100).toFixed(1)}%)</div></div>`).join('');
+
+//  FRAUD BY SOURCE 
+const fraudBySrc={};
+DATA.filter(r=>!r.is_business_logic_valid).forEach(r=>{const c=r.referral_source_category||'Unknown';fraudBySrc[c]=(fraudBySrc[c]||0)+1;});
+new Chart(document.getElementById('fraudBySource'),{
+  type:'bar',
+  data:{labels:Object.keys(fraudBySrc),datasets:[{label:'Flagged',data:Object.values(fraudBySrc),backgroundColor:'rgba(255,101,132,0.7)',borderRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},stepSize:1}}}}
+});
+
+//  TABLE 
+let currentFilter='all', currentSearch='';
+
+function getFiltered(){
+  let d=DATA;
+  if(currentFilter==='valid') d=d.filter(r=>r.is_business_logic_valid===true);
+  if(currentFilter==='flag') d=d.filter(r=>r.is_business_logic_valid===false);
+  if(currentFilter==='berhasil') d=d.filter(r=>r.referral_status==='Berhasil');
+  if(currentFilter==='menunggu') d=d.filter(r=>r.referral_status==='Menunggu');
+  if(currentSearch){const q=currentSearch.toLowerCase();d=d.filter(r=>(r.referral_id||'').toLowerCase().includes(q)||(r.referral_source||'').toLowerCase().includes(q)||(r.referrer_homeclub||'').toLowerCase().includes(q)||(r.referral_status||'').toLowerCase().includes(q));}
+  return d;
+}
+
+function renderTable(){
+  const data=getFiltered();
+  document.getElementById('rowCount').textContent=data.length+' rows';
+  const sm={'Berhasil':'b-berhasil','Menunggu':'b-menunggu','Tidak Berhasil':'b-failed'};
+  const cm={'Online':'b-online','Offline':'b-offline','Unknown':'b-unknown'};
+  document.getElementById('tbody').innerHTML=data.length?data.map(r=>{
+    const v=r.is_business_logic_valid===true;
+    const cat=r.referral_source_category||'Unknown';
+    return `<tr>
+      <td class="dim">${r.referral_details_id}</td>
+      <td class="truncate dim" title="${r.referral_id}">${r.referral_id.substring(0,14)}…</td>
+      <td>${r.referral_source}</td>
+      <td><span class="badge ${cm[cat]||'b-unknown'}">${cat}</span></td>
+      <td class="dim">${r.referral_at.substring(0,10)}</td>
+      <td>${r.referrer_homeclub||'—'}</td>
+      <td><span class="badge ${sm[r.referral_status]||'b-unknown'}"><span class="bdot"></span>${r.referral_status}</span></td>
+      <td>${r.num_reward_days||'—'}</td>
+      <td>${r.transaction_status||'—'}</td>
+      <td>${r.transaction_location||'—'}</td>
+      <td><span class="badge ${v?'b-valid':'b-flag'}"><span class="bdot"></span>${v?'Valid':'Flagged'}</span></td>
+    </tr>`;
+  }).join(''):'<tr><td colspan="11" class="empty">No records found</td></tr>';
+}
+
+function filterTable(type){
+  currentFilter=type;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active','active-red'));
+  const el=document.getElementById('pill-'+type);
+  if(el){if(type==='flag')el.classList.add('active','active-red');else el.classList.add('active');}
+  renderTable();
+}
+
+function searchTable(v){currentSearch=v;renderTable();}
+
+renderTable();
+
+//  SCROLL NAV 
+function scrollTo(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// Active nav on scroll
+const sections=['kpi','pipeline','rewards','fraud','report'];
+window.addEventListener('scroll',()=>{
+  const scrollY=window.scrollY+120;
+  sections.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&el.offsetTop<=scrollY&&el.offsetTop+el.offsetHeight>scrollY){
+      document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+      const links=document.querySelectorAll('.nav-link');
+      const idx=sections.indexOf(id);
+      if(links[idx])links[idx].classList.add('active');
+    }
+  });
+});
+</script>
+  
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-logo">
-    <div class="logo-mark">// SC</div>
+   <div class="logo-mark">// SC</div>
     <div class="logo-name">Springer Capital</div>
     <div class="logo-sub">Referral Intelligence</div>
   </div>
@@ -200,19 +403,21 @@ tbody tr:hover { background:rgba(255,255,255,0.02); }
   <div class="sidebar-bottom">
     <div class="sidebar-tag">
       <span class="status-dot"></span>Live Data<br/>
-      Pipeline v1.0 · 2024<br/>
-      Aadya Anil
+      Pipeline v1.0 · 2026<br/>
+      By Aadya Anil Kumar
     </div>
   </div>
 </aside>
 
+
+  
 <!-- MAIN -->
 <main class="main">
 
   <!-- TOPBAR -->
   <div class="topbar">
     <div>
-      <div class="page-eyebrow">// Referral Program</div>
+      <div class="page-eyebrow">Referral Program</div>
       <div class="page-title">Analytics <em>Dashboard</em></div>
     </div>
     <div class="top-meta">
@@ -328,7 +533,7 @@ tbody tr:hover { background:rgba(255,255,255,0.02); }
       <div class="chart-card">
         <div class="chart-card-title">Flagged by Source Category</div>
         <div class="chart-card-sub">Where fraud is concentrated</div>
-        <div class="chart-wrap h200"><canvas id="fraudBySource"></canvas></div>
+        <div class="chart-wrap h180"><canvas id="fraudBySource"></canvas></div>
       </div>
     </div>
   </section>
@@ -363,208 +568,6 @@ tbody tr:hover { background:rgba(255,255,255,0.02); }
 
 </main>
 
-<script>
-// ── DATA ──────────────────────────────────────────────────────────────
-const DATA = [{"referral_details_id":101,"referral_id":"9331c8f144dad5a3b8e4a10467b4343a","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-01 12:17:31","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":102,"referral_id":"6371079a92bcbf0c16ae5fcdf4fc9c10","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-04-22 22:04:57","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":103,"referral_id":"a49105b02e690472452527663559d97a","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 21:10:16","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":"Paid","transaction_location":"GREENVILLE","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":104,"referral_id":"fcb804c8ff24e5b2974a7e965ebea5e8","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-04-18 10:56:22","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":105,"referral_id":"9e9324e6fde29bb0d230654b38ccfdd4","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-14 13:17:03","referrer_homeclub":"PLUIT","referral_status":"Berhasil","num_reward_days":20,"transaction_status":"Paid","transaction_location":"ADITYAWARMAN","is_reward_granted":true,"is_business_logic_valid":true},{"referral_details_id":106,"referral_id":"b6732d2ca0bc7acbc1b39cb8a04a96cd","referral_source":"Lead","referral_source_category":"Unknown","referral_at":"2024-05-22 16:03:10","referrer_homeclub":"BLOK M","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":107,"referral_id":"835e990334fe52dec832043f19ddfd07","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-13 17:23:46","referrer_homeclub":"PLUIT","referral_status":"Berhasil","num_reward_days":10,"transaction_status":"Paid","transaction_location":"ADITYAWARMAN","is_reward_granted":true,"is_business_logic_valid":true},{"referral_details_id":108,"referral_id":"6667436490ad3c794a8f5127772d4810","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 21:06:39","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":"Paid","transaction_location":"BENHIL","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":109,"referral_id":"d452feec722a5cabc03645bb089e2735","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-03-20 14:48:49","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":10,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":110,"referral_id":"a95d6a6cefee850333bb2df257cb2f79","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-21 17:47:11","referrer_homeclub":"SUNSET ROAD","referral_status":"Berhasil","num_reward_days":10,"transaction_status":"Paid","transaction_location":"ADITYAWARMAN","is_reward_granted":true,"is_business_logic_valid":true},{"referral_details_id":111,"referral_id":"6a585aa172036ab3cda99023016c7bff","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 21:59:57","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":"Paid","transaction_location":"GREENVILLE","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":112,"referral_id":"678d8990730250f8001c25a7da8f05d4","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-03-08 18:31:24","referrer_homeclub":"ADITYAWARMAN","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":true,"is_business_logic_valid":true},{"referral_details_id":113,"referral_id":"1f44ffca9257eefe62892409bce4b704","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-03 09:00:59","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"BENHIL","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":114,"referral_id":"7bf019d6eec0fc5f6485fb4d1968fe80","referral_source":"Lead","referral_source_category":"Unknown","referral_at":"2024-05-22 15:47:24","referrer_homeclub":"BLOK M","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":115,"referral_id":"d0c11363fa2754323ed04ddbd0681bfb","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-04-30 20:54:15","referrer_homeclub":"BLOK M","referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":116,"referral_id":"41b807ac2774a0a29be25266d73fcf8b","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-11 00:13:57","referrer_homeclub":"BLOK M","referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":117,"referral_id":"2751eafffb38a7baf6c35f8bfb5e58e8","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 14:53:43","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"ARTERI PONDOK INDAH","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":118,"referral_id":"2d07be15757d1ea6d85b96f4d46c4a37","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-05-10 11:16:29","referrer_homeclub":"PLUIT","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":119,"referral_id":"d47843579ed8d4696b0abfbed179320f","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-22 14:24:50","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":120,"referral_id":"90abb7a3fab6efe0f5017b11df3c2ffc","referral_source":"Lead","referral_source_category":"Offline","referral_at":"2024-05-06 15:02:16","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":121,"referral_id":"251cb17f5a0a266d4eec7f3f478ad245","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-05-13 13:38:59","referrer_homeclub":"BLOK M","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":122,"referral_id":"79096365084a0d3f51ad9a0725f6708f","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 13:34:13","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":123,"referral_id":"61717d106753428549731b63554d70a5","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-05-13 13:31:40","referrer_homeclub":"BLOK M","referral_status":"Tidak Berhasil","num_reward_days":10,"transaction_status":null,"transaction_location":null,"is_reward_granted":true,"is_business_logic_valid":false},{"referral_details_id":124,"referral_id":"3c2d868e7310b1690f1e7429d04b4c6b","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-01 12:22:16","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":10,"transaction_status":null,"transaction_location":null,"is_reward_granted":true,"is_business_logic_valid":false},{"referral_details_id":125,"referral_id":"bfdc4ba9d1e89cd5f19ed6d239b7b06a","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-16 11:52:59","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"ADITYAWARMAN","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":126,"referral_id":"30a0cdbe9f518b9938bf9b9399f8b048","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-04-16 14:09:25","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":127,"referral_id":"b7056002e75cd4b2583d8e8ee401e230","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-20 11:23:21","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"ARTERI PONDOK INDAH","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":128,"referral_id":"3c2d4fcbb8d1bf5e82407fbae76b9917","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 11:49:01","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"ARTERI PONDOK INDAH","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":129,"referral_id":"8882f8f02e658bd06627f9e0aedf9325","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-03-20 14:49:17","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":20,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":130,"referral_id":"e066aaa1b0384cd538e5590be41ce325","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-01 12:07:31","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"SUNSET ROAD","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":131,"referral_id":"ca06593605d62bc27dacb93533278f44","referral_source":"Lead","referral_source_category":"Unknown","referral_at":"2024-05-24 11:57:33","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":132,"referral_id":"70ab7f982d360286a79c8a3050f5506d","referral_source":"Lead","referral_source_category":"Online","referral_at":"2024-04-23 11:55:40","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":133,"referral_id":"24a62000845ed37ef32e5f5b697480c1","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 20:46:38","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":"Paid","transaction_location":"GREENVILLE","is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":134,"referral_id":"7a03e01e0c17b2322845242a796adb5e","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-04-22 22:04:57","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":15,"transaction_status":null,"transaction_location":null,"is_reward_granted":true,"is_business_logic_valid":false},{"referral_details_id":135,"referral_id":"636f4143f3bbe2a832d3f8e3c7b7d848","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-05-05 19:03:23","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":136,"referral_id":"e6d2c72313e5d1a77ab02e20e3ba4ecb","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-04-23 11:55:40","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":137,"referral_id":"9aa929850a37a7071f8ea0cd62fcfb07","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-22 15:40:10","referrer_homeclub":"BLOK M","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":138,"referral_id":"4df44c256adf2c9cbb3655104f8dc395","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-06 15:09:35","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":139,"referral_id":"e3a55877243e31f6196748c21f7e2982","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-13 11:11:39","referrer_homeclub":"ARTERI PONDOK INDAH","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":140,"referral_id":"24e66dee053da38b3a19bfb9e91e8faf","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-22 09:22:58","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":141,"referral_id":"c848ba4844ae65f2420d373efc5908c9","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 15:21:11","referrer_homeclub":null,"referral_status":"Tidak Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":142,"referral_id":"e4b21d1dcdb37955b9e46b9357c7d0fe","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-03-14 15:56:33","referrer_homeclub":"BENHIL","referral_status":"Berhasil","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":false},{"referral_details_id":143,"referral_id":"e74f3e7cae96a2c81a7970ec3a8ccb82","referral_source":"User Sign Up","referral_source_category":"Online","referral_at":"2024-05-10 14:08:12","referrer_homeclub":"BENHIL","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":144,"referral_id":"962788593e04380982da789b978dcad6","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-13 10:30:51","referrer_homeclub":"PLUIT","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":145,"referral_id":"274ef52f2f70dbb3afa5c94bcbff41cb","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-13 16:47:45","referrer_homeclub":"PLUIT","referral_status":"Menunggu","num_reward_days":null,"transaction_status":null,"transaction_location":null,"is_reward_granted":false,"is_business_logic_valid":true},{"referral_details_id":146,"referral_id":"c98844d50327681160b17baa8756984a","referral_source":"Draft Transaction","referral_source_category":"Offline","referral_at":"2024-05-02 11:19:27","referrer_homeclub":null,"referral_status":"Menunggu","num_reward_days":null,"transaction_status":"Paid","transaction_location":"MAMPANG","is_reward_granted":false,"is_business_logic_valid":true}];
 
-// ── INIT ──────────────────────────────────────────────────────────────
-document.getElementById('datePill').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-
-const total = DATA.length;
-const success = DATA.filter(r=>r.referral_status==='Berhasil').length;
-const pending = DATA.filter(r=>r.referral_status==='Menunggu').length;
-const failed = DATA.filter(r=>r.referral_status==='Tidak Berhasil').length;
-const paid = DATA.filter(r=>r.transaction_status==='Paid').length;
-const granted = DATA.filter(r=>r.is_reward_granted===true).length;
-const valid = DATA.filter(r=>r.is_business_logic_valid===true).length;
-const invalid = total - valid;
-const uniqueReferrers = new Set(DATA.filter(r=>r.referrer_homeclub).map(r=>r.referrer_homeclub)).size;
-
-// KPIs
-document.getElementById('k-total').textContent = total;
-document.getElementById('k-success').textContent = success;
-document.getElementById('k-pending').textContent = pending;
-document.getElementById('k-failed').textContent = failed;
-document.getElementById('k-conv').textContent = ((success/total)*100).toFixed(1)+'%';
-document.getElementById('k-paid').textContent = paid;
-document.getElementById('k-reward').textContent = ((granted/total)*100).toFixed(1)+'%';
-document.getElementById('k-members').textContent = uniqueReferrers;
-
-// ── FUNNEL ────────────────────────────────────────────────────────────
-const funnelData = [
-  {label:'Total',val:total,color:'#6c63ff',pct:100},
-  {label:'Pending',val:pending,color:'#ffd166',pct:(pending/total*100)},
-  {label:'Failed',val:failed,color:'#ff6584',pct:(failed/total*100)},
-  {label:'Success',val:success,color:'#00e5a0',pct:(success/total*100)},
-];
-document.getElementById('funnelChart').innerHTML = funnelData.map(f=>`
-  <div class="funnel-row">
-    <div class="funnel-label">${f.label}</div>
-    <div class="funnel-bar-wrap">
-      <div class="funnel-bar" style="width:${f.pct}%;background:${f.color}20;border-left:3px solid ${f.color}">
-        <span class="funnel-bar-label" style="color:${f.color}">${f.val}</span>
-      </div>
-    </div>
-    <div class="funnel-val" style="color:${f.color}">${f.pct.toFixed(0)}%</div>
-  </div>`).join('');
-
-// ── MONTHLY CHART ──────────────────────────────────────────────────────
-const months = {};
-DATA.forEach(r=>{
-  const m = r.referral_at.substring(0,7);
-  months[m] = (months[m]||0)+1;
-});
-const mLabels = Object.keys(months).sort();
-const mVals = mLabels.map(m=>months[m]);
-const mDisplay = mLabels.map(m=>{const d=new Date(m+'-01');return d.toLocaleDateString('en-US',{month:'short',year:'2-digit'});});
-new Chart(document.getElementById('monthlyChart'),{
-  type:'bar',
-  data:{labels:mDisplay,datasets:[{data:mVals,backgroundColor:'rgba(108,99,255,0.6)',borderColor:'#6c63ff',borderWidth:1,borderRadius:3}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},stepSize:5}}}}
-});
-
-// ── BAR CHART ──────────────────────────────────────────────────────────
-const cats=[...new Set(DATA.map(r=>r.referral_source_category||'Unknown'))];
-const vC=cats.map(c=>DATA.filter(r=>(r.referral_source_category||'Unknown')===c&&r.is_business_logic_valid===true).length);
-const iC=cats.map(c=>DATA.filter(r=>(r.referral_source_category||'Unknown')===c&&r.is_business_logic_valid===false).length);
-new Chart(document.getElementById('barChart'),{
-  type:'bar',
-  data:{labels:cats,datasets:[{label:'Valid',data:vC,backgroundColor:'rgba(0,229,160,0.7)',borderRadius:3},{label:'Flagged',data:iC,backgroundColor:'rgba(255,101,132,0.7)',borderRadius:3}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},boxWidth:10}}},scales:{x:{grid:{display:false},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},stepSize:5}}}}
-});
-
-// ── DONUT ──────────────────────────────────────────────────────────────
-const statusColors={'Berhasil':'#00e5a0','Menunggu':'#ffd166','Tidak Berhasil':'#ff6584'};
-const statusData=[{l:'Berhasil',v:success},{l:'Menunggu',v:pending},{l:'Tidak Berhasil',v:failed}];
-new Chart(document.getElementById('donutChart'),{
-  type:'doughnut',
-  data:{labels:statusData.map(s=>s.l),datasets:[{data:statusData.map(s=>s.v),backgroundColor:statusData.map(s=>statusColors[s.l]),borderWidth:0,hoverOffset:4}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}
-});
-document.getElementById('donutLegend').innerHTML=statusData.map(s=>`
-  <div class="legend-row">
-    <div class="legend-left"><div class="legend-dot" style="background:${statusColors[s.l]}"></div>${s.l}</div>
-    <div class="legend-right" style="color:${statusColors[s.l]}">${s.v}</div>
-  </div>`).join('');
-
-// ── REWARD BARS ────────────────────────────────────────────────────────
-const rewardItems=[
-  {label:'Reward Granted',val:granted,total:total,color:'#00e5a0'},
-  {label:'Not Given',val:total-granted,total:total,color:'#ff6584'},
-];
-document.getElementById('rewardBars').innerHTML=rewardItems.map(r=>`
-  <div class="rbar-row">
-    <div class="rbar-top"><span>${r.label}</span><span style="color:${r.color};font-family:'IBM Plex Mono',monospace;font-size:12px">${r.val} (${(r.val/r.total*100).toFixed(1)}%)</span></div>
-    <div class="rbar-track"><div class="rbar-fill" style="width:${(r.val/r.total*100).toFixed(1)}%;background:${r.color}"></div></div>
-  </div>`).join('');
-
-// ── REWARD DAYS ────────────────────────────────────────────────────────
-const rdCounts={};
-DATA.forEach(r=>{ if(r.num_reward_days){const k=r.num_reward_days+' days';rdCounts[k]=(rdCounts[k]||0)+1;} });
-rdCounts['None']=(DATA.filter(r=>!r.num_reward_days).length);
-new Chart(document.getElementById('rewardDaysChart'),{
-  type:'doughnut',
-  data:{labels:Object.keys(rdCounts),datasets:[{data:Object.values(rdCounts),backgroundColor:['#6c63ff','#00e5a0','#ffd166','#3a3a50'],borderWidth:0}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:9},boxWidth:8,padding:8}}}}
-});
-
-// ── SOURCE CHART ───────────────────────────────────────────────────────
-const srcCounts={};DATA.forEach(r=>{srcCounts[r.referral_source]=(srcCounts[r.referral_source]||0)+1;});
-new Chart(document.getElementById('sourceChart'),{
-  type:'bar',
-  data:{labels:Object.keys(srcCounts),datasets:[{data:Object.values(srcCounts),backgroundColor:['#6c63ff','#00e5a0','#ffd166'],borderRadius:3}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:9}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},stepSize:5}}}}
-});
-
-// ── FRAUD DONUT ────────────────────────────────────────────────────────
-new Chart(document.getElementById('fraudDonut'),{
-  type:'doughnut',
-  data:{labels:['Valid','Flagged'],datasets:[{data:[valid,invalid],backgroundColor:['#00e5a0','#ff6584'],borderWidth:0,hoverOffset:4}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}
-});
-document.getElementById('fraudLegend').innerHTML=[
-  {l:'Valid',v:valid,c:'#00e5a0'},{l:'Flagged',v:invalid,c:'#ff6584'}
-].map(s=>`<div class="legend-row"><div class="legend-left"><div class="legend-dot" style="background:${s.c}"></div>${s.l}</div><div class="legend-right" style="color:${s.c}">${s.v} (${(s.v/total*100).toFixed(1)}%)</div></div>`).join('');
-
-// ── FRAUD BY SOURCE ────────────────────────────────────────────────────
-const fraudBySrc={};
-DATA.filter(r=>!r.is_business_logic_valid).forEach(r=>{const c=r.referral_source_category||'Unknown';fraudBySrc[c]=(fraudBySrc[c]||0)+1;});
-new Chart(document.getElementById('fraudBySource'),{
-  type:'bar',
-  data:{labels:Object.keys(fraudBySrc),datasets:[{label:'Flagged',data:Object.values(fraudBySrc),backgroundColor:'rgba(255,101,132,0.7)',borderRadius:3}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5a72',font:{family:'IBM Plex Mono',size:10},stepSize:1}}}}
-});
-
-// ── TABLE ──────────────────────────────────────────────────────────────
-let currentFilter='all', currentSearch='';
-
-function getFiltered(){
-  let d=DATA;
-  if(currentFilter==='valid') d=d.filter(r=>r.is_business_logic_valid===true);
-  if(currentFilter==='flag') d=d.filter(r=>r.is_business_logic_valid===false);
-  if(currentFilter==='berhasil') d=d.filter(r=>r.referral_status==='Berhasil');
-  if(currentFilter==='menunggu') d=d.filter(r=>r.referral_status==='Menunggu');
-  if(currentSearch){const q=currentSearch.toLowerCase();d=d.filter(r=>(r.referral_id||'').toLowerCase().includes(q)||(r.referral_source||'').toLowerCase().includes(q)||(r.referrer_homeclub||'').toLowerCase().includes(q)||(r.referral_status||'').toLowerCase().includes(q));}
-  return d;
-}
-
-function renderTable(){
-  const data=getFiltered();
-  document.getElementById('rowCount').textContent=data.length+' rows';
-  const sm={'Berhasil':'b-berhasil','Menunggu':'b-menunggu','Tidak Berhasil':'b-failed'};
-  const cm={'Online':'b-online','Offline':'b-offline','Unknown':'b-unknown'};
-  document.getElementById('tbody').innerHTML=data.length?data.map(r=>{
-    const v=r.is_business_logic_valid===true;
-    const cat=r.referral_source_category||'Unknown';
-    return `<tr>
-      <td class="dim">${r.referral_details_id}</td>
-      <td class="truncate dim" title="${r.referral_id}">${r.referral_id.substring(0,14)}…</td>
-      <td>${r.referral_source}</td>
-      <td><span class="badge ${cm[cat]||'b-unknown'}">${cat}</span></td>
-      <td class="dim">${r.referral_at.substring(0,10)}</td>
-      <td>${r.referrer_homeclub||'—'}</td>
-      <td><span class="badge ${sm[r.referral_status]||'b-unknown'}"><span class="bdot"></span>${r.referral_status}</span></td>
-      <td>${r.num_reward_days||'—'}</td>
-      <td>${r.transaction_status||'—'}</td>
-      <td>${r.transaction_location||'—'}</td>
-      <td><span class="badge ${v?'b-valid':'b-flag'}"><span class="bdot"></span>${v?'Valid':'Flagged'}</span></td>
-    </tr>`;
-  }).join(''):'<tr><td colspan="11" class="empty">No records found</td></tr>';
-}
-
-function filterTable(type){
-  currentFilter=type;
-  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active','active-red'));
-  const el=document.getElementById('pill-'+type);
-  if(el){if(type==='flag')el.classList.add('active','active-red');else el.classList.add('active');}
-  renderTable();
-}
-
-function searchTable(v){currentSearch=v;renderTable();}
-
-renderTable();
-
-// ── SCROLL NAV ─────────────────────────────────────────────────────────
-function scrollTo(id){
-  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
-  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-}
-
-// Active nav on scroll
-const sections=['kpi','pipeline','rewards','fraud','report'];
-window.addEventListener('scroll',()=>{
-  const scrollY=window.scrollY+120;
-  sections.forEach(id=>{
-    const el=document.getElementById(id);
-    if(el&&el.offsetTop<=scrollY&&el.offsetTop+el.offsetHeight>scrollY){
-      document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
-      const links=document.querySelectorAll('.nav-link');
-      const idx=sections.indexOf(id);
-      if(links[idx])links[idx].classList.add('active');
-    }
-  });
-});
-</script>
 </body>
 </html>
