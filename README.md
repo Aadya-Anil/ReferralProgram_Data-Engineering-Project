@@ -13,6 +13,8 @@ This project processes referral program data to identify valid and potentially f
 ├── 📄 data_dictionary.xlsx  
 ├── 📄 main.py  
 ├── 📄 requirements.txt  
+├── 📄 vercel.json  
+├── 📄 index.html  
 
 Each component serves a specific purpose:
 
@@ -23,6 +25,8 @@ Each component serves a specific purpose:
 * data_dictionary    : Data dictionary for business users
 * main.py            : Main pipeline script
 * requirements.txt   : Python dependencies
+* vercel.json        : Configuration file to deploy index.html and bypass main.py
+* index.html         : Interactive web dashboard that visualizes the referral analytics report.
   
 ## Requirements
 - Docker Desktop
